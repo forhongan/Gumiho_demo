@@ -1,0 +1,17 @@
+#这里指定一些系统设置,调用的的配置文件路径等
+systhem lanague: 'zh' #系统语言
+config_path: './default_config.yml/' #配置文件路径
+# ...
+
+#这里指定一些推荐的不同场景下用到的推荐prompt,以及默认设置等,用于恢复默认设置.
+chinese_prompt: 
+  first_trans_for_novel: "
+    请将给出的小说文本翻译为对应的简体中文
+    要求准确,通顺,译文符合中文的表达习惯 " #小说初译prompt
+  first_trans_for_VN_game: "
+    请将给出的文本翻译为对应的简体中文
+    要求准确,通顺,译文符合中文的表达习惯"
+
+English_prompt:
+
+#...
