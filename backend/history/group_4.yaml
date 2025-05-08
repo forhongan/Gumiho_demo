@@ -1,0 +1,540 @@
+prompt: |
+  请根据要求,将给出的文本翻译为对应的简体中文,并严格按照指定的格式要求输出
+  要求准确,通顺,译文符合中文的表达习惯
+  
+text: |
+  请注意,你这次翻译的是一本视觉小说的剧本文本
+
+  下面,我给出包括故事简介,人物介绍和专有名词翻译,和曾经翻译过的上文或是上文概括在内的一些信息,你需要理解这些信息并给出更准确恰当的翻译
+
+  该故事的简介是:
+  《愿你幸福》是一部轻松日常向视觉小说，故事设定在虚构的新西兰惠灵顿。
+  咪狐是一只出生在韩国森林的狐狸，她心底一直珍藏着一份回忆：曾有位旅人向她表达善意，对她提到“家”。如今的咪狐更具人形，她为了找当初的旅人，日复一日，年复一年，走过了漫长的寻人之路。她乘飞机来到漂浮于空中的新西兰群岛，降落在其中的瑰宝之地——惠灵顿。
+  
+  虽然多年来一直观察人类，但她对人类文化、人类社会的认识依然有待大量学习。她一直靠偷窃为生，敏锐的感官让她能够轻松骗过他人。她也目睹过人类的许多阴暗面。
+  
+  直到遇见了小型图书馆馆长朱丽叶和立志成为小说家的艾丝潘，咪狐才逐渐理解善良的含义，才开始意识到人类身上并不仅仅只有坏的一面。
+  
+
+  在该故事中,存在一些人物,他们的名字,对应的译名和人物特点如下:
+  主要角色:
+  Miho 咪狐  最早的记忆，是狐狸时期与一位善良的人类的相遇。从当初的小狐狸，到如今成长为另一番模样，她从未停止过寻人之旅。现在，她来到新西兰惠灵顿，开启了全新的生活。
+  Aspen 艾丝潘 她是一个热爱文字和故事的人类女孩。她在百合屋咖啡馆当咖啡师，梦想是成为一名受欢迎的作家。她努力从接触到的每一个人身上捕捉细小灵感。每个周末，她都会和妈妈通一个小时的电话.
+  Juliet 朱丽叶 身为吸血鬼的朱丽叶是惠灵顿最年长的居民之一。她将毕生的宝藏存放于图书馆，为每一个人敞开大门。除了书籍，她还为需要帮助的人出主意，献爱心，提供居所。有时她只能依靠回声定位来找阅读时戴的眼镜，这令她很是厌烦。
+  
+  次要角色:
+  Traveler 旅人  一个善意的旅人，曾向咪狐提到“家”
+  Tommy 汤米 小孩子，喜欢在句首用'Cause  
+  Gwen 格温 干练  
+  Elijah 以利亚 懒惰  
+  Gerby 歌比 传说生物,没有手，用petal来wave  
+  Lena 莉娜 元气十足，热情奔放，社牛话唠  
+  Cyrus 赛勒树精 闷骚树精  
+  Mr.Kim 金先生 宽厚中年大叔  
+  Cello 浩熙 三小只之一  
+  Armand 阿芒 三小只之一  
+  Pippa 皮帕 三小只之一  
+  Silver 小银 Eunbi银霏 (银盃)  
+  Lyra 莱茜 笔名Horim狐林；  
+  Jeong-in 郑仁 小狐班称之为 My person; they/them  
+  Happy 哈皮/乐乐 Aspen和Miho养的小狗,一般使用男性代词, Aspen线第五章  
+  Cosette 可赛特   
+  Young-min 永民 韩国人名，金先生支线  
+  Amaia 艾玛 保护区员工  
+  Minseo 敏筱 保护区员工
+  ??? ??? 用于表示未知人物
+  
+  专有名词:
+  Bellhouse Café 百合屋（百合屋咖啡店）  
+  Waterfront 码头  
+  Oriental Bay 东方湾  
+  Hataitai Park 法泰泰公园  
+  Cuba Street 古巴街  
+  Den 小窝  
+  Botanical Garden 植物园  
+  Mount Victoria 维多利亚山  
+  Skyport Airship 机场  
+  Te Papa 带帕帕  
+  Zealandia 西兰迪亚  
+  Underworld 下界  
+  Wellington Skyport 惠灵顿枢纽场  
+  Pier 码头 
+  
+
+  你现在翻译的是第 4 段
+  上1组的译文为:
+  
+  - id: 61  
+    machineTrans: '{但我不能。首先，我需要离开这里。而且前面还有一个挑战。}'
+    character: 'narration'
+    original text: 'But I can't. First, I need to get out of here. And there's one more challenge ahead.'
+  
+  - id: 62  
+    machineTrans: '{前方，蜿蜒的乘客队伍分开，人们被引导到几个安检站。}'
+    character: 'narration'
+    original text: 'Up ahead, the snaking line of passengers splits as people are funneled into a few security stations.'
+  
+  - id: 63  
+    machineTrans: '{前方，蜿蜒的乘客队伍分开，人们被引导到几个安检站。我离得太远，听不清守卫在说什么，但看起来他们在检查每位旅客的小册子后才放行。人类真是喜欢流程和程序。}'
+    character: 'narration'
+    original text: 'Up ahead, the snaking line of passengers splits as people are funneled into a few security stations.  While I'm too far back to hear what the guards are saying, it looks like they're examining a little booklet from each traveler before letting them pass. Humans sure like processes and procedures.'
+  
+  - id: 64  
+    machineTrans: '{我离得太远，听不清守卫在说什么，但看起来他们在检查每位旅客的小册子后才放行。人类真是喜欢流程和程序。我肯定没有那样的小册子。}'
+    character: 'narration'
+    original text: 'While I'm too far back to hear what the guards are saying, it looks like they're examining a little booklet from each traveler before letting them pass. Humans sure like processes and procedures.  I definitely don't have a booklet like that.'
+  
+  - id: 65  
+    machineTrans: '{我肯定没有那样的小册子。环顾四周，我希望能找到其他的出路。一个开着的窗户也行，或者一个无人看守的出口。我需要的时候还是挺擅长偷偷摸摸的。}'
+    character: 'narration'
+    original text: 'I definitely don't have a booklet like that.  Glancing around, I hope to find another way out. An open window would work, or even an unguarded exit. I'm pretty sneaky when I need to be.'
+  
+  - id: 66  
+    machineTrans: '{友好的守卫就在这里。回家的感觉真好。我相信。欢迎回来！他在那人的小册子上盖了个章，然后把它还给他，那人继续走出枢纽场。}'
+    character: 'narration'
+    original text: 'Friendly Guard  Right here. It's good to be home.  I'm sure. Welcome back!  He stamps something in the man's booklet and then hands it back to him, and he continues on out of the skyport.'
+  
+  - id: 67  
+    machineTrans: '{友好的守卫他在那人的小册子上盖了个章，然后把它还给他，那人继续走出枢纽场。下一个！}'
+    character: 'narration'
+    original text: 'Friendly Guard  He stamps something in the man's booklet and then hands it back to him, and he continues on out of the skyport.  Next!'
+  
+  - id: 68  
+    machineTrans: '{下一个！那就是我。}'
+    character: 'narration'
+    original text: 'Next!  That's me.'
+  
+  - id: 69  
+    machineTrans: '{那就是我。我不知道他们会对没有任何证件的人做什么，但我不想知道。我肯定会涉及很多问题，被带来带去，还有其他不愉快的事情。}'
+    character: 'narration'
+    original text: 'That's me.  I don't know what they'd do to people without any papers, but I don't wanna find out. I'm sure it involves lots of questions, being escorted around, and other unpleasant stuff.'
+  
+  - id: 70  
+    machineTrans: '{我不知道他们会对没有任何证件的人做什么，但我不想知道。我肯定会涉及很多问题，被带来带去，还有其他不愉快的事情。}'
+    character: 'narration'
+    original text: 'I don't know what they'd do to people without any papers, but I don't wanna find out. I'm sure it involves lots of questions, being escorted around, and other unpleasant stuff.'
+  
+  - id: 71  
+    machineTrans: '{友好的守卫随意地走近闸口，我露出我最灿烂、最友好的微笑，同时保持一点距离。呼吸平稳，尾巴安静，我确信我表现得很有说服力。护照，请。}'
+    character: 'narration'
+    original text: 'Friendly Guard  Casually approaching the gate, I put on my brightest, friendliest smile while keeping a slight distance. With my breathing steady and tail calm, I'm sure I put on a convincing act.  Passport, please.'
+  
+  - id: 72  
+    machineTrans: '{护照，请。当然！}'
+    character: 'Miho'
+    original text: 'Passport, please.  Of course!'
+  
+  - id: 73  
+    machineTrans: '{当然！我在口袋里摸索，假装在找我的护照。}'
+    character: 'narration'
+    original text: 'Of course!  I fumble around in my pockets, pretending to look for my passport.'
+  
+  - id: 74  
+    machineTrans: '{我在口袋里摸索，假装在找我的护照。相反，我抓住了我一直随身携带的无用笨重的手机，让它掉落在守卫的脚边。}'
+    character: 'narration'
+    original text: 'I fumble around in my pockets, pretending to look for my passport.  Instead, I grab the useless, clunky phone that I've been carrying around and let it clatter to the ground at the guard's feet.'
+  
+  - id: 75  
+    machineTrans: '{相反，我抓住了我一直随身携带的无用笨重的手机，让它掉落在守卫的脚边。果然，他弯下腰来帮我捡起来……}'
+    character: 'narration'
+    original text: 'Instead, I grab the useless, clunky phone that I've been carrying around and let it clatter to the ground at the guard's feet.  As expected, he bends down to retrieve it for me…'
+  
+  - id: 76  
+    machineTrans: '{友好的守卫果然，他弯下腰来帮我捡起来……哦，让我来帮你捡。}'
+    character: 'narration'
+    original text: 'Friendly Guard  As expected, he bends down to retrieve it for me…  Oh, let me get that for you.'
+  
+  - id: 77  
+    machineTrans: '{哦，让我来帮你捡。……然后我就跑了，尽可能快地冲过安检站。}'
+    character: 'narration'
+    original text: 'Oh, let me get that for you.  … and I make a run for it, bolting ahead and rushing past the security booths as quickly as I can.'
+  
+  - id: 78  
+    machineTrans: '{友好的守卫紧张的守卫……然后我就跑了，尽可能快地冲过安检站。嘿！你——等等！停下！当他们意识到发生了什么时，我已经领先了几秒钟。我的非人类速度，加上枢纽场的自然混乱，应该也能为我争取一点时间。不过，我得甩掉他们！}'
+    character: 'narration'
+    original text: 'Friendly Guard  Stressed Guard  … and I make a run for it, bolting ahead and rushing past the security booths as quickly as I can.  Hey! You- Wait!  Stop!  By the time they realize what's happened, I already have a few seconds' head start. My inhuman speed, combined with the natural chaos of the skyport, should also buy me a bit of time.  Still, I've gotta get them off my tail!'
+  
+  - id: 79  
+    machineTrans: '{冲出枢纽场的门，来到外面的马路上，我甚至没有时间欣赏这座城市。不停歇地，我跑进狭窄的街道，在汽车和震惊的路人之间穿梭。}'
+    character: 'narration'
+    original text: 'Dashing through the skyport doors and out into the road outside, I don't even have time to take in the city. Without stopping for breath, I run into the narrow streets while weaving between cars and shocked bystanders.'
+  
+  - id: 80  
+    machineTrans: '{被这么多人看到有点烦人，但明天就无所谓了。}'
+    character: 'narration'
+    original text: 'Being seen by so many people like this is annoying, but it won't matter by tomorrow.'
+  
+  - id: 81  
+    machineTrans: '{把这个念头抛到脑后，我翻过一堵矮墙，进入附近的小巷，落地时蹲下。虽然只有片刻不被看到，我闭上眼睛，放松肌肉。除了脖子上的微微温暖，所有感觉都消失了。}'
+    character: 'narration'
+    original text: 'Putting the thought out of my mind, I vault over a low wall into a nearby alley and land in a crouch.  Out of sight, but for only a moment, I close my eyes and relax my muscles. All feeling disappears except a slight warmth against my neck.'
+  
+  - id: 82  
+    machineTrans: '{我的秘密武器。这个看似不起眼的项链是我仅有的财产之一，也是最重要的。挂在我脖子上的某颗珠子在我的意志下开始发热，一股舒缓的温暖流遍全身。我的手和脚开始先变形，毛发沿着手臂和腿蔓延，随着它们扭曲和缩短。这种感觉在我第一次尝试时是如此奇怪；令人惊讶的是，现在它已经变得像本能一样。}'
+    character: 'narration'
+    original text: 'My secret weapon.  The unremarkable-looking necklace is one of my only possessions, and by far the most important. A certain one of the beads strung around my neck begins to heat up in response to my will, a soothing warmth flowing through my body.  My hands and feet begin to morph first, the fur chasing up my arms and legs as they distort and shorten. This sensation was so bizarre the first few times I tried; it's amazing how it's become second-nature by now.'
+  
+  - id: 83  
+    machineTrans: '{我的手和脚开始先变形，毛发沿着手臂和腿蔓延，随着它们扭曲和缩短。这种感觉在我第一次尝试时是如此奇怪；令人惊讶的是，现在它已经变得像本能一样。闭上眼睛，我让身体和头部依次变化。脸部总是有点不舒服，我曾经的人脸变得又长又尖，变成了一个鼻口，过程有些困难。仅仅几秒钟后，过程完成，我睁开眼睛，不再是人类，而是一只狐狸。}'
+    character: 'narration'
+    original text: 'My hands and feet begin to morph first, the fur chasing up my arms and legs as they distort and shorten. This sensation was so bizarre the first few times I tried; it's amazing how it's become second-nature by now.  Closing my eyes, I let my body and head shift in turn. The face is always a little uncomfortable, my once-human face changing and lengthening into a snout with some difficulty.  The process complete after only a few seconds, I open my eyes not as a human, but as a fox.'
+  
+  - id: 84  
+    machineTrans: '{我毫不犹豫地迅速离开，四条腿的速度远比两条腿快。像前面那堆垃圾桶这样的障碍物，作为人类时会很难通过，但我却能在缝隙间轻松穿梭而不减速。}'
+    character: 'narration'
+    original text: 'I dart away without waiting, far quicker on four legs than I ever could be on two. Obstacles like the stack of garbage cans ahead would be a pain to get past as a human, but instead I'm able to flit between the gaps without slowing down.'
+  
+  - id: 85  
+    machineTrans: '{友好的守卫我毫不犹豫地迅速离开，四条腿的速度远比两条腿快。像前面那堆垃圾桶这样的障碍物，作为人类时会很难通过，但我却能在缝隙间轻松穿梭而不减速。就是她！我知道是她！}'
+    character: 'narration'
+    original text: 'Friendly Guard  I dart away without waiting, far quicker on four legs than I ever could be on two. Obstacles like the stack of garbage cans ahead would be a pain to get past as a human, but instead I'm able to flit between the gaps without slowing down.  That's her! I know it!'
+  
+  - id: 86  
+    machineTrans: '{就是她！我知道是她！听起来那个安保人员还没有放弃追我。我加快速度，尽可能快地奔跑。}'
+    character: 'narration'
+    original text: 'That's her! I know it!  Sounds like the security guard hasn't given up on me yet. I pick up the pace, running as fast as my paws will take me.'
+  
+  - id: 87  
+    machineTrans: '{他的沉重呼吸声越来越远，只需一两分钟我就知道我安全了。我不知道我在哪里，但就像我开始跑的时候一样，我也不知道我在哪里！}'
+    character: 'narration'
+    original text: 'His heavy breathing gets farther and farther away, and in just a minute or two I know I'm safe.  I don't know where I am, but it's not like I knew where I was when I started running!'
+  
+  - id: 88  
+    machineTrans: '{我不知道我在哪里，但就像我开始跑的时候一样，我也不知道我在哪里！我几乎为追我的那个人感到难过。他从来没有机会。}'
+    character: 'narration'
+    original text: 'I don't know where I am, but it's not like I knew where I was when I started running!  I almost feel bad for the guy who was chasing me. He never stood a chance.'
+  
+  - id: 89  
+    machineTrans: '{我几乎为追我的那个人感到难过。他从来没有机会。即使在拥挤的城市街道上，也没有人或任何东西能跑得过我。风只希望能跟上我！}'
+    character: 'narration'
+    original text: 'I almost feel bad for the guy who was chasing me. He never stood a chance.  Even in the crowded city streets, there's no way anyone or anything that can outrun me. The wind just wishes it could keep up with me!'
+  
+  - id: 90  
+    machineTrans: '{即使在拥挤的城市街道上，也没有人或任何东西能跑得过我。风只希望能跟上我！}'
+    character: 'narration'
+    original text: 'Even in the crowded city streets, there's no way anyone or anything that can outrun me. The wind just wishes it could keep up with me!'
+  
+  
+  此外,我们将上 5 段的文本进行了总结,总结如下:
+  第1段的总结为:
+  本次翻译内容总结: 本次翻译的内容主要描述了一个森林中的场景，雾气笼罩，白桦树颤抖，溪流汩汩流淌。一个旅人进入小树林，遇到了一只狐狸，两者之间形成了一种亲密的纽带。旅人即将离开，表达了对狐狸的依依不舍和对家的向往。随后，故事转到咪狐在飞机上藏匿的情节，她成功地从飞机上溜走，开始了在惠灵顿的新生活。
+  第2段的总结为:
+  本次翻译内容总结: 本次翻译的内容主要描述了旅人与小狐狸咪狐之间的最后一次对话，旅人即将离开，表达了对家的思念和对小狐狸的祝愿。随后，故事转到咪狐抵达新西兰惠灵顿枢纽场的情景，她成功地从飞机上溜下，开始了新的旅程。
+  第3段的总结为:
+  本次翻译内容总结: 本次翻译的内容主要描述了咪狐在惠灵顿枢纽场的逃脱过程。她巧妙地利用自己的速度和变身能力，成功逃过安检人员的追捕，展现了她的机智和灵活。通过变身为狐狸，她在城市中迅速穿梭，最终安全脱身。
+  
+  本段需要翻译的文本为:
+  - id: 91
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Comfortable that the danger's passed, I slip into another alley. Once I'm sure that I'm alone, I close my eyes and concentrate on the form I want to take once more.'
+  - id: 92
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'When I decided to make the journey to Wellington, it was pretty impulsive. I'd overheard another pair of travelers talking about it and how beautiful a city it is.'
+  - id: 93
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'When I decided to make the journey to Wellington, it was pretty impulsive. I'd overheard another pair of travelers talking about it and how beautiful a city it is.
+    With a moment now to take in the scenery, I can see they weren't wrong.'
+  - id: 94
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'With a moment now to take in the scenery, I can see they weren't wrong.
+    The streets around here seem like a mix of homes and businesses. Everything is very colorful. Even the brick walls are covered in pictures and paint.'
+  - id: 95
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'The streets around here seem like a mix of homes and businesses. Everything is very colorful. Even the brick walls are covered in pictures and paint.
+    In the distance, I can see green hills that are lined with houses, as well as green hills that are completely empty. There are… a lot of hills, now that I look around some.'
+  - id: 96
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'A couple of bills in what I figure is the local currency. I slide the money out and into a pocket of my jacket.
+    By now the man is so far ahead that he's almost out of sight. I have to hurry to catch up to him to give him back his wallet, and he barely even says thank you.'
+  - id: 97
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'By now the man is so far ahead that he's almost out of sight. I have to hurry to catch up to him to give him back his wallet, and he barely even says thank you.
+    I shoulda just kept the whole thing…
+    It's only fair that I get a little something for myself, since it's not like he would've ever gotten it back without me!'
+  - id: 98
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I head back to my bench and inspect my prize.'
+  - id: 99
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'I head back to my bench and inspect my prize.
+    A blue bill and a brown one. These feel sturdy, nothing like the paper I expected!
+    One… zero… ten! And… five. So… fifteen.
+    Fifteen isn't much. I definitely should've kept the whole wallet.
+    Oh well, at least this should be enough to buy myself something to drink.'
+  - id: 100
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Oh well, at least this should be enough to buy myself something to drink.'
+  - id: 101
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'My thirst is starting to get the better of me, as I haven't had anything since I snuck onto the airship.'
+  - id: 102
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Following my nose, I walk down the busy street until I find one of the many cafés lining the path. The sign hanging above its front door has a picture of a bell on it.'
+  - id: 103
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'A charming bell rings out from above the door as I enter. I can't help but savor the wave of refreshing, cool air washing over me, which feels even better after so much running.'
+  - id: 104
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Miho.
+    It's my first time testing out how that name sounds, and I decide that I like it.'
+  - id: 105
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'It's my first time testing out how that name sounds, and I decide that I like it.
+    I decided on the airship that that was the name I would use here in Wellington. I've used so many names throughout my life that I can't remember most of them. For each new city that I visit, I come up with something new.'
+  - id: 106
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I decided on the airship that that was the name I would use here in Wellington. I've used so many names throughout my life that I can't remember most of them. For each new city that I visit, I come up with something new.
+    Foxes don't have any use for names, so nobody ever gave me one.'
+  - id: 107
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Foxes don't have any use for names, so nobody ever gave me one.
+    She scribbles something on the cup with a black marker. If that's how this name looks, then I'm even more pleased with it.
+    Four fifty, please.
+    I hand her the brown bill and she gives me back a big coin with a picture of a boat on it.
+    Alright! I’ll have this ready for you in no time!'
+  - id: 108
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Looking down to the map I took, I trace the path I made from the port to this café. It's useful, but it doesn't really tell me anything helpful about the houses in particular.
+    I’ll need to find a higher vantage point.'
+  - id: 109
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I’ll need to find a higher vantage point.
+    I move my finger along the hills I noticed from outside, following the little brown path to a patch of green with a little mountain icon. That should work for now.'
+  - id: 110
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I move my finger along the hills I noticed from outside, following the little brown path to a patch of green with a little mountain icon. That should work for now.
+    Miho?'
+  - id: 111
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'Miho?
+    My ears perk up, right as the barista arrives and places my drink in front of me.
+    Thanks!
+    I reach over and take the warm cup in my hand, but the barista doesn't let go.
+    You ready for the rain tomorrow?'
+  - id: 112
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'Huh?
+    It's gonna rain tomorrow.
+    I glance behind me out the window. It's as sunny and blue a day as I've ever seen.'
+  - id: 113
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'I glance behind me out the window. It's as sunny and blue a day as I've ever seen.
+    How do you know that? There aren't any clouds out there.'
+  - id: 114
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'How do you know that? There aren't any clouds out there.
+    I'm just good with the weather. Anyway, if you forget, then you'll be sorry.'
+  - id: 115
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I'm just good with the weather. Anyway, if you forget, then you'll be sorry.
+    She finally lets go of my drink and heads back behind the counter.'
+  - id: 116
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'She finally lets go of my drink and heads back behind the counter.
+    People are weird. Does the barista pull that on everyone?'
+  - id: 117
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'People are weird. Does the barista pull that on everyone?'
+  - id: 118
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Standing on the doorstep, I have my first sip.'
+  - id: 119
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Eventually I go to sip my coffee, only to find nothing coming out. With no more reason to stick around, it's time to go.
+    On the sunlit street, I look about to match what I can see with the map's directions. There's a tall, green mountain in the distance ahead of me, which must be the one on the map. It'll be the perfect vantage point for the city.
+    Ideally, I’ll find an empty building I can crash in, but it's not necessary. A roof over my head would be nice, but I'm plenty used to sleeping outside under the stars. Sometimes, it's better than sleeping in a bed!'
+  - id: 120
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Ideally, I’ll find an empty building I can crash in, but it's not necessary. A roof over my head would be nice, but I'm plenty used to sleeping outside under the stars. Sometimes, it's better than sleeping in a bed!
+    Encouraged by the plan forming in my head, I set off on the long walk to the summit.'
+  接下来,请根据上面的信息,理解故事的设定,翻译这些文本,并将翻译结果填入machineTrans中,请注意,这些文本是一整组的,请保持上下文的连贯性,并遵守人名和专有名词翻译表
+
+  你的输出应严格遵守下述结构:(仅将译文填入machineTrans: 中)
+  翻译结果:
+  - id: 91
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Comfortable that the danger's passed, I slip into another alley. Once I'm sure that I'm alone, I close my eyes and concentrate on the form I want to take once more.'
+  - id: 92
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'When I decided to make the journey to Wellington, it was pretty impulsive. I'd overheard another pair of travelers talking about it and how beautiful a city it is.'
+  - id: 93
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'When I decided to make the journey to Wellington, it was pretty impulsive. I'd overheard another pair of travelers talking about it and how beautiful a city it is.
+    With a moment now to take in the scenery, I can see they weren't wrong.'
+  - id: 94
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'With a moment now to take in the scenery, I can see they weren't wrong.
+    The streets around here seem like a mix of homes and businesses. Everything is very colorful. Even the brick walls are covered in pictures and paint.'
+  - id: 95
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'The streets around here seem like a mix of homes and businesses. Everything is very colorful. Even the brick walls are covered in pictures and paint.
+    In the distance, I can see green hills that are lined with houses, as well as green hills that are completely empty. There are… a lot of hills, now that I look around some.'
+  - id: 96
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'A couple of bills in what I figure is the local currency. I slide the money out and into a pocket of my jacket.
+    By now the man is so far ahead that he's almost out of sight. I have to hurry to catch up to him to give him back his wallet, and he barely even says thank you.'
+  - id: 97
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'By now the man is so far ahead that he's almost out of sight. I have to hurry to catch up to him to give him back his wallet, and he barely even says thank you.
+    I shoulda just kept the whole thing…
+    It's only fair that I get a little something for myself, since it's not like he would've ever gotten it back without me!'
+  - id: 98
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I head back to my bench and inspect my prize.'
+  - id: 99
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'I head back to my bench and inspect my prize.
+    A blue bill and a brown one. These feel sturdy, nothing like the paper I expected!
+    One… zero… ten! And… five. So… fifteen.
+    Fifteen isn't much. I definitely should've kept the whole wallet.
+    Oh well, at least this should be enough to buy myself something to drink.'
+  - id: 100
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Oh well, at least this should be enough to buy myself something to drink.'
+  - id: 101
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'My thirst is starting to get the better of me, as I haven't had anything since I snuck onto the airship.'
+  - id: 102
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Following my nose, I walk down the busy street until I find one of the many cafés lining the path. The sign hanging above its front door has a picture of a bell on it.'
+  - id: 103
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'A charming bell rings out from above the door as I enter. I can't help but savor the wave of refreshing, cool air washing over me, which feels even better after so much running.'
+  - id: 104
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Miho.
+    It's my first time testing out how that name sounds, and I decide that I like it.'
+  - id: 105
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'It's my first time testing out how that name sounds, and I decide that I like it.
+    I decided on the airship that that was the name I would use here in Wellington. I've used so many names throughout my life that I can't remember most of them. For each new city that I visit, I come up with something new.'
+  - id: 106
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I decided on the airship that that was the name I would use here in Wellington. I've used so many names throughout my life that I can't remember most of them. For each new city that I visit, I come up with something new.
+    Foxes don't have any use for names, so nobody ever gave me one.'
+  - id: 107
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Foxes don't have any use for names, so nobody ever gave me one.
+    She scribbles something on the cup with a black marker. If that's how this name looks, then I'm even more pleased with it.
+    Four fifty, please.
+    I hand her the brown bill and she gives me back a big coin with a picture of a boat on it.
+    Alright! I’ll have this ready for you in no time!'
+  - id: 108
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Looking down to the map I took, I trace the path I made from the port to this café. It's useful, but it doesn't really tell me anything helpful about the houses in particular.
+    I’ll need to find a higher vantage point.'
+  - id: 109
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I’ll need to find a higher vantage point.
+    I move my finger along the hills I noticed from outside, following the little brown path to a patch of green with a little mountain icon. That should work for now.'
+  - id: 110
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I move my finger along the hills I noticed from outside, following the little brown path to a patch of green with a little mountain icon. That should work for now.
+    Miho?'
+  - id: 111
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'Miho?
+    My ears perk up, right as the barista arrives and places my drink in front of me.
+    Thanks!
+    I reach over and take the warm cup in my hand, but the barista doesn't let go.
+    You ready for the rain tomorrow?'
+  - id: 112
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'Huh?
+    It's gonna rain tomorrow.
+    I glance behind me out the window. It's as sunny and blue a day as I've ever seen.'
+  - id: 113
+    machineTrans: '{}'
+    character: 'Miho'
+    original text: 'I glance behind me out the window. It's as sunny and blue a day as I've ever seen.
+    How do you know that? There aren't any clouds out there.'
+  - id: 114
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'How do you know that? There aren't any clouds out there.
+    I'm just good with the weather. Anyway, if you forget, then you'll be sorry.'
+  - id: 115
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'I'm just good with the weather. Anyway, if you forget, then you'll be sorry.
+    She finally lets go of my drink and heads back behind the counter.'
+  - id: 116
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'She finally lets go of my drink and heads back behind the counter.
+    People are weird. Does the barista pull that on everyone?'
+  - id: 117
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'People are weird. Does the barista pull that on everyone?'
+  - id: 118
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Standing on the doorstep, I have my first sip.'
+  - id: 119
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Eventually I go to sip my coffee, only to find nothing coming out. With no more reason to stick around, it's time to go.
+    On the sunlit street, I look about to match what I can see with the map's directions. There's a tall, green mountain in the distance ahead of me, which must be the one on the map. It'll be the perfect vantage point for the city.
+    Ideally, I’ll find an empty building I can crash in, but it's not necessary. A roof over my head would be nice, but I'm plenty used to sleeping outside under the stars. Sometimes, it's better than sleeping in a bed!'
+  - id: 120
+    machineTrans: '{}'
+    character: 'narration'
+    original text: 'Ideally, I’ll find an empty building I can crash in, but it's not necessary. A roof over my head would be nice, but I'm plenty used to sleeping outside under the stars. Sometimes, it's better than sleeping in a bed!
+    Encouraged by the plan forming in my head, I set off on the long walk to the summit.'
+  本次翻译内容总结:(在此填入简单的此次翻译的内容的总结,50-100字左右)
+  {}
+  问题报告:(没有就填 无)
+  {}

@@ -1,0 +1,36 @@
+{  
+    "title": "...", // 文集或书籍标题（可选）  
+    "author": "...", // 作者（可选）
+    "translator": "...", // 译者（可选）
+    "description": "...", // 描述（可选）
+    "chapters": [  
+        {
+            "id": 1, // 段落编号  
+            "original-text": "第一章 启航", // 原文  
+            "translation-text": "", // 译文 
+            "type": "title_lv1" ,//一级标题
+            "state": "f_trans_unfinished" //f_trans_unfinished, f_trans_finished,p_finished,checked,re_trans_needed
+        },
+        {
+            "id": 2, // 段落编号  
+            "original-text": "船要扬帆起航了", // 原文  
+            "translation-text": "", // 译文 
+            "type": "main_text" ,
+            "state": "f_trans_unfinished"
+        },
+        {
+            "id": 3, // 段落编号  
+            "original-text": "王明在甲板上看着港口里的...", // 原文  
+            "translation-text": "", // 译文 
+            "type": "main_text" ,
+            "state": "f_trans_unfinished"
+        }
+        {
+            "id": 4, // 段落编号  
+            "original-text": "第二章 沉没", // 原文  
+            "translation-text": "", // 译文 
+            "type": "title_lv1" ,//一级标题
+            "state": "f_trans_unfinished" //f_trans_unfinished, f_trans_finished,p_finished,checked,re_trans_needed
+        },
+    ]
+}  

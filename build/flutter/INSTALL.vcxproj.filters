@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Software_Project_Management\Gumiho_demo\build\CMakeFiles\11996bb41e3127b82ca6dd97401a9e4c\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{F10BC22E-9985-3ACC-9B46-8F42533CC2B5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

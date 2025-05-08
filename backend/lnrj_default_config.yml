@@ -1,0 +1,213 @@
+# Gumiho System 九尾狐系统是一个用于产生更准确,高质量的人工智能翻译文本的系统
+# 本系统模拟人类翻译过程,将ai的翻译拆分为初译,校对,润色等阶段,提供自动生成人名/专有名词字典,自动生成文本总结,自动生成历史文本总结并利用等功能
+# Gumiho System会通过用户设置,自动生成各阶段的ai请求prompt,要求ai进行结构化输出,并将其处理保存,方便下一阶段的翻译工作和后期的人工精修
+
+#----------------------------项目基本设置----------------------------
+Translation Project Name: 
+Translater:
+  - "forhongan"
+type: Novel # 项目类型,可选Novel,game,video,默认为novel
+file name:  # 项目文件名
+original language: Japanese # 原文语言
+target language: Chinese #目标语言
+writing style: | # 书籍风格,可选
+paragraphed: true #存在段落(即存在次级标题)
+#需要翻译的源文件的格式，支持json，sql（默认为来自lunatranslate的结构），excel，docs，txt
+original format: .txt
+
+#默认ai
+default_ai_setting:
+  api: "https://ark.cn-beijing.volces.com/api/v3"
+  key: 
+  model_name: "deepseek-r1-250120"
+  stream: true
+  json_or_not: false
+  max_len: 8192
+
+#需要的翻译任务
+first_translation_needed: true #是否需要初译
+Proofreading_needed: true #是否需要校对
+
+
+#----------------------------书籍基本设置----------------------------
+
+book/game/video Name:  # 书籍/游戏/视频名称
+book content summary: | # 已知的书籍内容简介,可选
+Writing style: | # 书籍风格,可选
+
+
+#----------------------------项目初译设置----------------------------
+first_translation_setting:
+  sentence-by-sentence_translation: false #启用逐句翻译模式,不启用时默认为整合翻译模式
+  Number of texts per group: 30 #启用整合翻译模式时,每组文本的数量
+  enable contents: true #存在/启用章节表
+
+  human_involvement: true #是否需要人工参与
+  human_check_setting: #人工参与设置,设定人工参与的部分,human_involvement: true时生效
+    summary_check: true #是否需要人工检查总结
+
+  #历史文本利用与总结优化
+  Automatically generated text summary:
+    enable: true #设置为true时启用
+    create: true #设置为true时,自动生成文本总结
+    using: true #设置为true时,自动利用历史文本总结
+    enable previous chapter summary: true
+    enable longterm summary: true
+    Number of history generated records: 5 #自动利用的历史记录数量,不启用时默认为零
+    Number of historical texts used: 30 #加入上文的历史文本原文数量,不启用时默认为零
+
+  #人名/专有名词翻译设置
+  Proper noun translation: true # 设置为true时,翻译,设置为false时,所有人名和专有名词保留原文
+  Automatic Translation Dictionary: 
+    enable: true #设置为true时,自动生成专有名词对照翻译词典  
+    enable_describe : true #设置为true时,自动生成人名/专有名词的描述
+    enable_describe_using: true #设置为true时,自动利用人名/专有名词的描述
+    enable_longterm: true #设置为true时,自动生成长期人名/专有名词对照翻译词典
+    enable_longterm_using: true #设置为true时,自动利用长期人名/专有名词对照翻译词典  
+
+  #用于初译的prompt文本
+  base_prompt: |
+    你是一个专业的轻小说翻译者,可以根据给出的文本和上下文信息,翻译出优质的译文,并严格按照指定格式输出
+  
+  Output structure: | #非json模式下输出结构
+    # 翻译结果
+    id：[ID数字]
+    译文：[翻译内容]
+    ...
+    （按顺序处理每个ID对应的内容）
+
+    # 本次总结
+    本次总结：[用1-2句话概括本组内容的核心信息]
+
+    # 新增人物（可选）
+    1.
+    name:[原文名称]
+    translation:[确定的译名]
+    describe:[根据文中简要描述该人物,可以包含性别,特征等,不需要包含不确定的信息]
+    2.
+    ...
+    # 对原有人物的修改（可选）
+    1.
+    name:[原文名称]
+    describe:[修改后的描述,当本次内容中出现了对该人物补充的描述和特点,在此进行修改]
+    2.
+    ...
+    # 其他认为有必要添加的专有名词（例如某个技能,某个城市的名字等,可选）
+    1.
+    name:[原文名称]
+    translation:[确定的译名]
+    describe:[根据文中简要描述该名词,可以包含性质,特征等,不需要包含不确定的信息]
+  
+  #用于指定初译时ai结构化输出的样例json格式
+  json_structure: |
+    {
+      
+    }
+  Checklist: | #附加检查表
+    ##1.对原有人物的修改 中,填入的是修改后或加入补充之后的完整描述,不要删去原有描述!除非你认为原有描述有误,但可以进行一定程度的总结概括
+    尤其对于人物性别,性格特征等信息,除非确认发生了变化,否则不要进行修改
+    ##2.name:后填入的应为原文名称
+  
+  # ai_config:
+  #   api: "https://api.deepseek.com"
+  #   key: "sk-88b68a5e3b144c8d9fde445fdbc1b914"
+  #   model_name: "deepseek-reasoner"
+  #   stream: true
+  #   json_or_not: false
+  #   max_len: 8192
+  
+  ai_config:
+    api: "https://ark.cn-beijing.volces.com/api/v3"
+    key: "324f38b9-9d9d-4039-a4ce-99debb60cb88"
+    model_name: "deepseek-r1-250120"
+    stream: true
+    json_or_not: false
+    max_len: 8192
+
+
+#----------------------------项目校对设置----------------------------
+proofreading_setting:
+  #用于指定校对的prompt文本
+  proofreading_prompt: |
+    你需要执行一个轻小说的校对任务
+    根据给出的日中对照的译文文本,上下文,和给出的与小说有关的其他信息,对照检查表,一句句检查原翻译是否存在错误是否存在更合适的翻译,并按格式要求输出.
+
+  Enable Contents: false #存在/启用章节表
+
+  #用于指定ai结构化输出的样例json格式
+  novel_Proofreading_json: |
+
+  #人名/专有名词翻译设置
+  Proper noun translation: true # 设置为true时,翻译,设置为false时,所有人名和专有名词保留原文
+  Automatic Translation Dictionary: true #设置为true时,自动生成对照翻译词典  
+
+  #历史文本利用与总结优化
+  Automatically generated text summary:
+    enable: true #设置为true时,自动生成文本总结
+    create: true #设置为true时,自动生成文本总结
+    using: true #设置为true时,自动利用历史文本总结
+    Number of history generated records: 5 #自动利用的历史记录组数,不启用时默认为零
+    Number of historical texts used: 0 #加入上文的历史文本原文组数,不启用时默认为零
+  Number of texts per group: 30 #每组文本的数量
+  Output structure: | #输出结构
+    ## 请严格按以下结构输出：
+    # 翻译结果
+    id：[ID数字]
+    译文：[翻译内容]
+    ...
+    （按顺序处理每个ID对应的内容）
+
+    # 本次总结
+    本次总结：[用1-2句话概括本组内容的核心信息]
+
+    # 新增人物（可选）
+    1.
+    name:[原文名称]
+    translation:[确定的译名]
+    describe:[根据文中简要描述该人物,可以包含性别,特征等,不需要包含不确定的信息]
+    2.
+    ...
+    # 对原有人物的修改（可选）
+    1.
+    name:[原文名称]
+    describe:[修改后的描述,当本次内容中出现了对该人物补充的描述和特点,在此进行修改]
+    2.
+    ...
+    # 其他认为有必要添加的专有名词（例如某个技能,某个城市的名字等,可选）
+    1.
+    name:[原文名称]
+    translation:[确定的译名]
+    describe:[根据文中简要描述该名词,可以包含性质,特征等,不需要包含不确定的信息]
+    
+  Checklist: | #附加检查表
+    #其他注意点:
+    ##1.对原有人物的修改 中,填入的是修改后的完整描述,不要删去原有描述,除非你认为原有描述有误,但可以进行一定程度的总结概括
+    ##2.name:后填入的应为原文名称
+  
+  ai_config:
+    api: "https://api.deepseek.com"
+    key: ""
+    model_name: "deepseek-reasoner"
+    stream: true
+    json_or_not: false
+    max_len: 8192
+
+
+
+
+
+
+
+
+
+
+
+
+#这里指定了翻译对象为.sqlite,即兼容lunaTranslator翻译记录的处理模式
+luna_fomat_setting:
+  Number of texts per group: 30 #每组文本的数量(每个id下为"一个"文本)
+  Character existence: true # 是否存在人物信息,当该选项设置为true时,如果文本前存在"人物+换行符"将会被识别为这条文本的来源人物,若不存在,则视为旁白
+  Update character/proper noun dictionary: true # 是否更新人物/专有名词字典,当该选项设置为true时,如果发现了新的人物,将会询问使用者是否更新人物字典,如果设置为false,人物栏将默认为"其他角色"
+
+Novel translation setting:
+  max_len_num: 200
