@@ -1,6 +1,7 @@
 # 这里定义了将不同格式的原文件整理为标准格式的函数
 import json
 import os
+import re
 #-------------------待完成-------------------------
     #设计一些自动检测文章结构的方法,将结构的关键数据写入config传递给主格式化文件
     #设计与用户交互的方法经由用户提示确定文件格式
@@ -13,8 +14,8 @@ def automatic_structure_detection(file_path):
     convert_novel_to_json(file_path,config)
 
 #-------------------待完成-------------------------
-#定义从文本取得外部目录的方式,保存到config中
-def directory_import(dir_text,config):
+#定义从文本取得外部目录的方式,保存到path指向的.json文件中
+def directory_import(dir_text,path):
     
 #-------------------待完成-------------------------
 #定义从文本中取得专有名词名词词典的方式,保存到config中
@@ -101,3 +102,48 @@ def convert_novel_to_json(file_path,config):
         json.dump({'chapters': chapters}, f, ensure_ascii=False, indent=2)
     
     return output_path2
+
+class NovelDirectoryHandler:
+    def create_directory(self, directory):
+        """
+        在指定文件夹中创建 table_of_content.json 文件,初始内容为空目录列表.
+        
+        参数:
+            directory (str): 文件夹路径
+        """
+        toc_path = os.path.join(directory, "table_of_content.json")
+        with open(toc_path, 'w', encoding='utf-8') as f:
+            json.dump({"chapters": []}, f, ensure_ascii=False, indent=2)
+        return toc_path
+
+    def update_directory(self, content_str, json_path):
+        """
+        从输入字符串中提取章节目录并更新指定的 JSON 文件(忽略重复章节）。
+        章节通过回车或空行进行分隔.
+        
+        参数:
+            content_str (str): 包含目录信息的字符串
+            json_path (str): 指向 table_of_content.json 文件的完整路径
+        """
+        # 使用正则表达式分割字符串,以匹配单个换行及空行情况
+        chapters_extracted = [chap.strip() for chap in re.split(r'\n\s*\n|\r?\n', content_str) if chap.strip()]
+        
+        # 读取已有的目录
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+        else:
+            data = {"chapters": []}
+        
+        # 更新目录列表, 如果章节标题已存在则忽略
+        existing_chapters = set(data.get("chapters", []))
+        for chap in chapters_extracted:
+            if chap not in existing_chapters:
+                data["chapters"].append(chap)
+                existing_chapters.add(chap)
+        
+        # 写入更新后的数据到 JSON 文件
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        return data
