@@ -1,0 +1,36 @@
+# 环境变量文件
+.env
+.env.*
+*.env
+
+# 项目专用文件夹
+*_project/
+
+# 临时文件
+*.pdb
+*.exp
+*.lib
+*.ilk
+*.obj
+*.tmp
+*.log
+*.tlog
+
+# 构建输出
+/release_package/
+
+# IDE相关文件
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+
+# Flutter/Dart 特定文件
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+/build/
+.pub-cache/
+.pub/
+/coverage/

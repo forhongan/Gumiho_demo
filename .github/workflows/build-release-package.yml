@@ -1,0 +1,70 @@
+name: Build Release Package
+
+on:
+  push:
+    tags: ['v*']  # 打版本tag时触发
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 1. 构建Flutter前端
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Build Windows
+      run: flutter build windows --release
+
+    # 2. 创建临时发布目录
+    - name: Prepare release directory
+      run: |
+        mkdir release_package
+        mkdir release_package\frontend
+
+    # 3. 复制前端构建文件（保留原始目录结构）
+    - name: Copy frontend files
+      run: |
+        xcopy /E /I "frontend_flutter\build\windows\x64\runner\Release" "release_package"
+
+    # 4. 复制backend目录（排除_project结尾的文件夹，和所有.env文件）
+    - name: Copy backend with exclusions
+      run: |
+        robocopy "backend" "release_package\backend" /E /XD *_project
+        powershell -Command "Get-ChildItem -Path release_package\backend -Recurse -Filter '.env*' | Remove-Item -Force"
+        powershell -Command "Get-ChildItem -Path release_package\backend -Recurse -Filter '*.env' | Remove-Item -Force"
+
+    # 5. 复制其他必要文件
+    - name: Copy additional files
+      run: |
+        copy "Gumiho先行测试版使用说明.docx" "release_package\"
+        copy "GumihoLauncher.exe" "release_package\"
+
+    # 6. 清理可能存在的临时文件
+    - name: Clean temporary files
+      run: |
+        REM 删除前端构建中可能存在的调试文件
+        del /F /Q release_package\frontend\*.pdb
+        del /F /Q release_package\frontend\*.exp
+        del /F /Q release_package\frontend\*.lib
+
+    # 7. 打包发布目录
+    - name: Create Zip Package
+      run: |
+        cd release_package
+        7z a -r myapp-windows.zip *
+        move myapp-windows.zip ..
+
+    # 8. 上传制品
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-package
+        path: myapp-windows.zip

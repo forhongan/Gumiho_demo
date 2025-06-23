@@ -1,0 +1,6 @@
+Flask==3.1.1
+flask_socketio==5.5.1
+openai==1.86.0
+PyYAML==6.0.2
+ruamel.yaml==0.18.5
+python-dotenv
