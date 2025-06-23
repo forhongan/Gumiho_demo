@@ -1,0 +1,50 @@
+Translation Project Name: 对反派千金发动百合攻势后，她却当真了，还把我收为宠物
+Translater:
+- whc
+type: Novel
+original language: Japanese
+target language: Chinese
+paragraphed: true
+original format: .txt
+default_ai_setting:
+  api: https://api.deepseek.com
+  key: sk-e70d223b841a45f89d3b2a15b180bf8d
+  model_name: deepseek-r1-250120
+  stream: true
+  json_or_not: false
+  max_len: 8191
+first_translation_needed: true
+Proofreading_needed: true
+Name: ''
+book content summary: ''
+Enable base imformation: false
+first_translation_setting:
+  sentence-by-sentence_translation: false
+  Number of texts per group: 30
+  enable uniform length: false
+  enable Maximum length: false
+  enable contents: true
+  human_involvement: true
+  human_check_setting:
+    summary_check: true
+  Automatically generated text summary:
+    enable: true
+    create: true
+    using: true
+    Number of history generated records: 5
+    Number of historical texts used: 30
+    enable previous chapter summary: true
+    enable longterm summary: true
+  Proper noun translation: true
+  Automatic Translation Dictionary:
+    enable: true
+    enable_describe: true
+    enable_describe_using: true
+    enable_longterm: true
+    enable_longterm_using: true
+  base_prompt: "你是一个专业的轻小说翻译者,可以根据给出的文本和上下文信息,以及从记录库中匹配到的人物记录,翻译出优质的译文,并严格按照指定格式输出\n"
+  Output structure: "# 翻译结果\nid：[ID数字]\n译文：[翻译内容]\n...\n（按顺序处理每个ID对应的内容）\n\n# 本次总结\n
+    本次总结：[用1-2句话概括本组内容的核心信息]\n\n# 新增人物（可选）\n1.\nname:[原文名称]\ntranslation:[确定的译名]\n
+    describe:[根据文中简要描述该人物,可以包含性别,特征等,不需要包含不确定的信息]\n2.\n...\n# 对原有人物的修改（可选）\n1.\nname:[原文名称]\n
+    describe:[修改后的描述,当本次内容中出现了对该人物补充的描述和特点,在此进行修改]\n2.\n...\n# 其他认为有必要添加的专有名词（例如某个技能,某个城市的名字等,可选）\n\
+    1.\nname:[原文名称]\ntranslation:[确定的译名]\ndescribe:[根据文中简要描述该名词,可以包含性质,特征等,不需要包含不确定的信息]\n"
