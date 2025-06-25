@@ -61,11 +61,9 @@ jobs:
     - name: Create Zip Package
       shell: powershell
       run: |
-        # 从github.ref提取版本号（去掉refs/tags/v前缀）
-        $version = "${{ github.ref }}".Replace('refs/tags/v', '')
         cd release_package
-        7z a -r "Gumiho-windows-$version.zip" *
-        move "Gumiho-windows-$version.zip" ..
+        7z a -r "Gumiho-windows-${{ github.ref_name }}.zip" *
+        move "Gumiho-windows-${{ github.ref_name }}.zip" ..
 
     # 8. 上传制品 - 更新到v4版本
     - name: Upload Artifact
