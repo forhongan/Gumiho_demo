@@ -66,9 +66,9 @@ jobs:
         7z a -r "Gumiho-windows-$version.zip" *
         move "Gumiho-windows-$version.zip" ..
 
-    # 8. 上传制品
+    # 8. 上传制品 - 更新到v4版本
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-package
         path: Gumiho-windows-${{ github.ref_name }}.zip
