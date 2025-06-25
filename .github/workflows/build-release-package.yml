@@ -71,3 +71,14 @@ jobs:
       with:
         name: windows-package
         path: Gumiho-windows-${{ github.ref_name }}.zip
+        
+    # 9. 创建GitHub Release并上传发布包
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: Gumiho-windows-${{ github.ref_name }}.zip
+        name: Gumiho ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
