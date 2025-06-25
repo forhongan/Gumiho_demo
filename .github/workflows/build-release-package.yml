@@ -51,6 +51,7 @@ jobs:
 
     # 6. 清理可能存在的临时文件
     - name: Clean temporary files
+      shell: cmd
       run: |
         del /F /Q release_package\frontend\*.pdb
         del /F /Q release_package\frontend\*.exp
@@ -58,8 +59,9 @@ jobs:
 
     # 7. 打包发布目录
     - name: Create Zip Package
+      shell: powershell
       run: |
-        # 从github.ref提取版本号（去掉refs/tags/前缀和v前缀）
+        # 从github.ref提取版本号（去掉refs/tags/v前缀）
         $version = "${{ github.ref }}".Replace('refs/tags/v', '')
         cd release_package
         7z a -r "Gumiho-windows-$version.zip" *
