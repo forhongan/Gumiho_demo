@@ -18,9 +18,11 @@ jobs:
         channel: stable
 
     - name: Install dependencies
+      working-directory: frontend_flutter
       run: flutter pub get
 
     - name: Build Windows
+      working-directory: frontend_flutter
       run: flutter build windows --release
 
     # 2. 创建临时发布目录
@@ -58,13 +60,15 @@ jobs:
     # 7. 打包发布目录
     - name: Create Zip Package
       run: |
+        # 从github.ref提取版本号（去掉refs/tags/前缀和v前缀）
+        $version = "${{ github.ref }}".Replace('refs/tags/v', '')
         cd release_package
-        7z a -r myapp-windows.zip *
-        move myapp-windows.zip ..
+        7z a -r "Gumiho-windows-$version.zip" *
+        move "Gumiho-windows-$version.zip" ..
 
     # 8. 上传制品
     - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: windows-package
-        path: myapp-windows.zip
+        path: Gumiho-windows-${{ github.ref_name }}.zip
