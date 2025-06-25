@@ -52,7 +52,6 @@ jobs:
     # 6. 清理可能存在的临时文件
     - name: Clean temporary files
       run: |
-        REM 删除前端构建中可能存在的调试文件
         del /F /Q release_package\frontend\*.pdb
         del /F /Q release_package\frontend\*.exp
         del /F /Q release_package\frontend\*.lib
