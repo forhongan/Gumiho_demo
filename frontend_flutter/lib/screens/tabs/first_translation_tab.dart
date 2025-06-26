@@ -292,7 +292,7 @@ class FirstTranslationTab extends StatelessWidget {
           // Prompt设置
           _buildSectionTitle(context, 'Prompt设置'),
           _buildTextFieldWithInfo(
-            '基础提示词',
+            'AI设定提示词', // 将"基础提示词"修改为"AI设定提示词"
             config.firstTranslationSetting.basePrompt,
             (value) {
               onConfigChanged(config.copyWith(
@@ -301,21 +301,24 @@ class FirstTranslationTab extends StatelessWidget {
                 ),
               ));
             },
-            infoText: '基础提示词设置',
+            infoText: 'AI设定提示词设置，用于指导AI进行翻译', // 更新提示文本
             maxLines: 5,
           ),
+          // 删除输出结构部分
+          
+          // 添加强化检查项部分
           _buildTextFieldWithInfo(
-            '输出结构',
-            config.firstTranslationSetting.outputStructure,
+            '强化检查项',
+            config.firstTranslationSetting.checklist,
             (value) {
               onConfigChanged(config.copyWith(
                 firstTranslationSetting: config.firstTranslationSetting.copyWith(
-                  outputStructure: value,
+                  checklist: value,
                 ),
               ));
             },
-            infoText: '输出结构设置',
-            maxLines: 5,
+            infoText: '用于指导AI的附加检查表，设置一些特定规则和注意事项',
+            maxLines: 8,
           ),
           
           const SizedBox(height: 30),

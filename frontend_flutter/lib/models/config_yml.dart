@@ -203,6 +203,7 @@ class FirstTranslationSetting {
   // Prompt设置
   final String basePrompt;
   final String outputStructure;
+  final String checklist; // 新增字段
 
   // 添加初译AI独立配置设置
   final bool enableIndependenceAIConfig;
@@ -221,6 +222,7 @@ class FirstTranslationSetting {
     required this.autoTranslationDictionary,
     required this.basePrompt,
     required this.outputStructure,
+    this.checklist = '', // 新增参数并设置默认值
     this.enableIndependenceAIConfig = false,
     this.aiConfig,
   });
@@ -241,6 +243,7 @@ class FirstTranslationSetting {
           map['Automatic Translation Dictionary'] ?? {}),
       basePrompt: map['base_prompt'] ?? '',
       outputStructure: map['Output structure'] ?? '',
+      checklist: map['Checklist'] ?? '', // 从YAML中读取Checklist字段
       enableIndependenceAIConfig: map['enable_independence_ai_config'] ?? false,
       aiConfig: map['ai_config'] != null ? AISetting.fromMap(map['ai_config']) : null,
     );
@@ -260,6 +263,7 @@ class FirstTranslationSetting {
       'Automatic Translation Dictionary': autoTranslationDictionary.toMap(),
       'base_prompt': basePrompt,
       'Output structure': outputStructure,
+      'Checklist': checklist, // 添加到输出的YAML中
       'enable_independence_ai_config': enableIndependenceAIConfig,
     };
     
@@ -284,6 +288,7 @@ class FirstTranslationSetting {
     AutoTranslationDictionary? autoTranslationDictionary,
     String? basePrompt,
     String? outputStructure,
+    String? checklist,
     bool? enableIndependenceAIConfig,
     AISetting? aiConfig,
   }) {
@@ -300,6 +305,7 @@ class FirstTranslationSetting {
       autoTranslationDictionary: autoTranslationDictionary ?? this.autoTranslationDictionary,
       basePrompt: basePrompt ?? this.basePrompt,
       outputStructure: outputStructure ?? this.outputStructure,
+      checklist: checklist ?? this.checklist,
       enableIndependenceAIConfig: enableIndependenceAIConfig ?? this.enableIndependenceAIConfig,
       aiConfig: aiConfig ?? this.aiConfig,
     );
