@@ -412,7 +412,7 @@ class TranslatingAPI:
                 return
             while True:
                 msg = channel.get()
-                print(f"[DEBUG] 将发送SSE消息: {msg}")  # 调试输出
+                # print(f"[DEBUG] 将发送SSE消息: {msg}")  # 调试输出
                 if msg == "DONE":
                     yield "event: end\ndata: {}\n\n"
                     break
