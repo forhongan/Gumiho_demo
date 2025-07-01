@@ -82,22 +82,8 @@ class LongTermSummary(Project):
         - "translate"中最小id为开始位置, "range"为结束位置
         - 若记录的开始与结束均在start_id和end_id范围内,则格式化后添加到summary列表中
         """
-        records = self.Record.data.get("record", [])
-        # 遍历每条记录
-        for rec in records:
-            if rec.get("status") == "written":
-                translate_dict = rec.get("translate", {})
-                if not translate_dict:
-                    continue
-                # 获取translate中最小的key作为开始位置,转换成整数
-                start = int(min(translate_dict.keys(), key=lambda k: int(k)))
-                # 获取结束位置
-                end = int(rec.get("range", 0))
-                # 如果记录的开始与结束在指定区间内,则添加格式化的字符串到summary列表中
-                if start >= int(start_id) and end <= int(end_id):
-                    summary_text = rec.get("Summary", "")
-                    formatted = f"范围: {start}-{end}的总结为:{summary_text}"
-                    self.summary.append(formatted)
+        self.summary = []  # 清空之前的summary列表
+        self.summary = self.Record.get_summary_by_paragraph_title(self.title["title"])
 
     def lts_generate_summary(self):
         """
@@ -106,7 +92,8 @@ class LongTermSummary(Project):
         sys_prompt = f"你是一个强大的ai助手,需要根据给出的内容,生成某个段落或整个作品的总结,并严格按照格式要求输出"
         newline = "\n"
         user_prompt = f"""
-你需要生成<{self.title['title']}>这一章的总结,该段落可能由部分子段落组成,并且这些子段落都已经完成内容总结,我将给出组成这段的子段落的总结,由你来生成整章内容的总结
+你需要生成<{self.title['title']}>这一章的内容总结,该段落可能由部分子段落组成,并且这些子段落都已经完成内容总结,我将给出组成这段的子段落的总结,由你来生成整章内容的总结
+生成的总结应聚焦于故事情节,不需要包含过多的作品分析.
 {newline.join(self.summary)}:
 仅返回生成的总结,不要包含任何其他内容
 """
@@ -175,13 +162,6 @@ class LongTermSummary(Project):
                 print(item)
                 
         print_lines(user_prompt)
-
-    # 新增入口方法，无需创建实例即可调用
-    @classmethod
-    def generate_previous_chapter_summary(cls,project_name, title: dict, status):  # 修改：删除 file_path 参数
-        instance = cls(project_name, title, status)
-        instance.lts_generate()
-        #return instance.higher_summary
 
 
 

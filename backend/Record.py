@@ -153,7 +153,7 @@ class Record:
         # 根据段落标题获取对应的该段的总结
         summaries = []
         for record in self.data.get("record", []):
-            if record.get("title") == title:
+            if record.get("title") == title and record.get("status")=="written":
                 summaries.append(record.get("Summary", ""))
         return summaries
     
