@@ -59,7 +59,7 @@ class Record:
         )
         if content_block:
             translations = re.findall(
-                r"id[：:]\s*(\d+)\s+译文[：:]\s*(.*?)(?=\n\n|$)", 
+                r"id[\s\n]*[：:]\s*(\d+)[\s\n]*译文[\s\n]*[：:]\s*(.*?)(?=\s*\nid[\s\n]*[：:]|$)", 
                 content_block.group(1), 
                 re.DOTALL
             )

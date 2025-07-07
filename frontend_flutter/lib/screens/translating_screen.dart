@@ -144,9 +144,15 @@ class _TranslatingScreenState extends State<TranslatingScreen> with SingleTicker
         // ✅ 提交成功后先重置状态
         _resetState();
         
-        // 再判断是否继续翻译
+        // 修改：无论是手动点击还是自动模式，都启动下一次翻译
         if (_autoModeRunning && _currentAutoCount < _autoTranslateCount) {
+          // 自动模式处理
           _currentAutoCount++;
+          Future.delayed(const Duration(milliseconds: 500), () {
+            startTranslating(); // 开始下一轮
+          });
+        } else if (!_autoModeRunning && _translationCompleted) {
+          // 手动模式下，点击按钮也启动下一次翻译
           Future.delayed(const Duration(milliseconds: 500), () {
             startTranslating(); // 开始下一轮
           });
@@ -280,56 +286,52 @@ class _TranslatingScreenState extends State<TranslatingScreen> with SingleTicker
           _buildAutoTranslationControls(),
           if (_showCompletion) _buildCompletionSection(),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20),
-            child: ScaleTransition(
-              scale: Tween(begin: 0.95, end: 1.0).animate(
-                CurvedAnimation(
-                  parent: _animationController,
-                  curve: Curves.easeInOut,
-                ),
-              ),
-              child: ElevatedButton(
-                onPressed: _isLoading 
-                  ? null 
-                  : _translationCompleted 
-                      ? _submitWithoutCheck 
-                      : startTranslating,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
+          // 修改：只在非翻译完成状态下显示主按钮
+          if (!_translationCompleted)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20),
+              child: ScaleTransition(
+                scale: Tween(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: _animationController,
+                    curve: Curves.easeInOut,
                   ),
-                  elevation: 6,
-                  shadowColor: Colors.blueAccent.withOpacity(0.4),
                 ),
-                child: _isLoading
-                  ? const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(width: 12),
-                        Text("翻译中...", style: TextStyle(fontSize: 18))
-                      ],
-                    )
-                  : Text(
-                      _translationCompleted 
-                        ? "信任翻译，提交并启动下一次翻译" 
-                        : "开始翻译",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : startTranslating,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
                     ),
+                    elevation: 6,
+                    shadowColor: Colors.blueAccent.withOpacity(0.4),
+                  ),
+                  child: _isLoading
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text("翻译中...", style: TextStyle(fontSize: 18))
+                        ],
+                      )
+                    : const Text(
+                        "开始翻译",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                      ),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

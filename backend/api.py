@@ -74,11 +74,23 @@ class ConfigAPI:
     def register_routes(self, app):
         app.add_url_rule("/config", view_func=self.get_config, methods=["GET"])
         app.add_url_rule("/config", view_func=self.update_config, methods=["POST"])
+        # 移除单独的全局配置接口路由，使用现有接口
     
     def get_config(self):
-        config_path = request.args.get("configPath")
+        # 检查是否请求全局配置
+        is_global = request.args.get("isGlobalConfig") == "true"
+        config_path = None
+        
+        if is_global:
+            # 使用全局配置路径
+            config_path = os.path.join(current_dir, "config.yml")
+        else:
+            # 使用项目特定配置路径
+            config_path = request.args.get("configPath")
+        
         if not config_path or not os.path.exists(config_path):
-            return jsonify({"error": "非法的configPath"}), 400
+            return jsonify({"error": "非法的配置路径"}), 400
+            
         config_instance = Config(config_path)
         data = config_instance.read_config()
         yaml_buffer = io.StringIO()
@@ -88,11 +100,23 @@ class ConfigAPI:
     def update_config(self):
         data = request.get_json()
         print("Received data:", data)
-        config_path = data.get("configPath")
+        
+        # 检查是否更新全局配置
+        is_global = data.get("isGlobalConfig") == True
+        config_path = None
+        
+        if is_global:
+            # 使用全局配置路径
+            config_path = os.path.join(current_dir, "config.yml")
+        else:
+            # 使用项目特定配置路径
+            config_path = data.get("configPath")
+        
         content = data.get("content")
         if not config_path or not os.path.exists(config_path) or content is None:
             print("参数错误：", config_path, content)
             return jsonify({"error": "非法的参数"}), 400
+            
         try:
             config_instance = Config(config_path)
             # 首先读取原始配置文件
@@ -109,22 +133,19 @@ class ConfigAPI:
             
             # 递归合并配置
             def merge_configs(original, partial):
+                # ...现有的合并逻辑...
                 if not isinstance(partial, dict):
-                    # 如果不是字典类型，直接返回部分配置的值
                     return partial
                 
                 result = original.copy() if isinstance(original, dict) else {}
                 
                 for key, value in partial.items():
                     if key in original and isinstance(original[key], dict) and isinstance(value, dict):
-                        # 递归合并嵌套字典
                         result[key] = merge_configs(original[key], value)
                     else:
-                        # 对于非字典类型或原配置中不存在的键，输出调试信息
                         if key not in original:
                             print(f"警告: 原配置中不存在键 '{key}'，可能导致配置解析失败")
                         
-                        # 仍然更新值，但已提供警告
                         result[key] = value
                 
                 return result
@@ -132,11 +153,13 @@ class ConfigAPI:
             # 合并配置
             updated_config = merge_configs(original_config, partial_config)
             
-            # 写入更新后的完整配置 (会自动处理API密钥到环境变量的保存)
+            # 写入更新后的完整配置
             config_instance.write_config(updated_config)
             
-            print(f"配置已成功更新，路径: {config_path}")
-            return jsonify({"message": "配置已更新"}), 200
+            config_type = "全局" if is_global else "项目"
+            print(f"{config_type}配置已成功更新，路径: {config_path}")
+            return jsonify({"message": f"{config_type}配置已更新"}), 200
+            
         except Exception as e:
             import traceback
             print("保存配置时发生异常：", str(e))

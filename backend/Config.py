@@ -15,7 +15,7 @@ class Config:
         print(f"Config 类初始化，路径: {config_path}")
         self.config_path = config_path
         self.yaml = YAML()
-        # 获取项目根目录
+
         self.project_dir = os.path.dirname(config_path)
         self.env_path = os.path.join(self.project_dir, '.env')
         

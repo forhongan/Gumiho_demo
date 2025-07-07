@@ -40,7 +40,7 @@ class _FileExportScreenState extends State<FileExportScreen> {
       "start_title": startChapter,
       "end_title": endChapter,
       "target_state": targetState,
-      "translatefilePath": widget.project.translatefilePath, // 新增参数
+      "translatefilePath": widget.project.translatefilePath,
     };
     final response = await http.post(url,
         headers: {"Content-Type": "application/json"},

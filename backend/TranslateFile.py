@@ -196,13 +196,16 @@ class TranslateFile:
         
         return title_chapters
 
-    def export_translatefile(self, start_id, end_id):
+    def export_translatefile(self, start_id, end_id, orig_txt=True):
         """
         导出翻译文件为适合用户阅读的文本。
         接受 start_id 和 end_id（章节的 id，而非列表下标），导出内容包括 title、description，
-        以及从 start_id 到 end_id 的 original-text 和 translation-text，格式参考原实现。
+        以及从 start_id 到 end_id 的 original-text 和 translation-text，
+        保留与原文文件相同的空行格式。
         """
         import os
+        import glob
+        
         novel_title = self.data.get("title", "ExportedNovel")
         description = self.data.get("description", "")
         chapters = self.data.get("chapters", [])
@@ -214,27 +217,84 @@ class TranslateFile:
             print("Error: 无效的 start_id 或 end_id")
             return None
         
+        # 寻找原文文件
+        folder = os.path.dirname(self.translatefile_path)
+        source_folder = os.path.join(folder, "sourcefile")
+        source_files = glob.glob(os.path.join(source_folder, "*.txt"))
+        
+        # 保存原文文件的所有非空行及其前面的空行数
+        source_lines = []
+        source_line_index = 0  # 用于顺序匹配的索引
+        
+        if source_files:
+            source_file = source_files[0]  # 取第一个找到的源文件
+            try:
+                with open(source_file, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    
+                # 分析原文中的空行
+                blank_count = 0
+                for line in lines:
+                    line = line.strip()
+                    if not line:  # 空行
+                        blank_count += 1
+                    else:  # 非空行
+                        source_lines.append({"text": line, "blank_lines": blank_count})
+                        blank_count = 0
+            except Exception as e:
+                print(f"读取源文件时出错: {e}")
+        
         selected_chapters = chapters[start_index:end_index+1]
-        lines = []
+        output_lines = []
+        
         # 添加标题和描述
-        lines.append(novel_title)
-        lines.append("")
+        output_lines.append(novel_title)
+        output_lines.append("")
         if description:
-            lines.append(description)
-            lines.append("")
+            output_lines.append(description)
+            output_lines.append("")
+        
         # 添加章节内容
+        prev_chapter = None
         for chapter in selected_chapters:
             orig = chapter.get("original-text", "")
             trans = chapter.get("translation-text", "")
-            lines.append(orig)
-            lines.append(trans)
-            if chapter.get("type", "").startswith("title"):
-                lines.append("")
-                lines.append("")
-            else:
-                lines.append("")
-        text = "\n".join(lines)
-        folder = os.path.dirname(self.translatefile_path)
+            
+            # 根据原文中的空行添加空行
+            if prev_chapter is not None:
+                # 获取当前原文前应有的空行数（顺序匹配）
+                blank_count = 1  # 默认1个空行
+                
+                # 从上次匹配位置开始，寻找匹配的原文
+                if source_lines:
+                    found = False
+                    start_search_idx = source_line_index
+                    
+                    # 在剩余的源文件中查找当前句子
+                    for i in range(start_search_idx, len(source_lines)):
+                        if source_lines[i]["text"] == orig:
+                            blank_count = source_lines[i]["blank_lines"]
+                            source_line_index = i + 1  # 更新下次查找的起始位置
+                            found = True
+                            break
+                
+                # 如果是标题，确保至少有2个空行
+                if chapter.get("type", "").startswith("title"):
+                    blank_count = max(blank_count, 2)
+                
+                # 添加空行
+                for _ in range(blank_count):
+                    output_lines.append("")
+            
+            # 添加原文和译文
+            if(orig_txt):
+                output_lines.append(orig)
+            output_lines.append(trans)
+            
+            prev_chapter = chapter
+        
+        # 写入文件
+        text = "\n".join(output_lines)
         output_path = os.path.join(folder, f"{novel_title}.txt")
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text)

@@ -6,6 +6,7 @@ import '../widgets/global_sidebar.dart';
 import 'create_nproject_screen.dart'; // 新增导入
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'config_screen.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -107,6 +108,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Theme.of(context).primaryColor,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ConfigScreen(
+                                project: null, // 传递null表示是全局配置
+                                isGlobalConfig: true,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.settings, size: 20),
+                        label: Text("全局配置"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber[700],
+                          foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),

@@ -63,8 +63,14 @@ final GumihoConfig defaultConfig = GumihoConfig(
 );
 
 class ConfigScreen extends StatefulWidget {
-  final Project project;
-  const ConfigScreen({Key? key, required this.project}) : super(key: key);
+  final Project? project; // 修改为可空类型
+  final bool isGlobalConfig; // 新增全局配置标志
+  
+  const ConfigScreen({
+    Key? key, 
+    this.project, // 修改为可选参数
+    this.isGlobalConfig = false, // 添加默认值为false
+  }) : super(key: key);
 
   @override
   State<ConfigScreen> createState() => _ConfigScreenState();
@@ -91,7 +97,11 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
   }
 
   Future<void> _loadConfig() async {
-    final uri = Uri.parse('http://127.0.0.1:5000/config?configPath=${widget.project.configPath}');
+    // 统一使用config接口，通过参数区分全局配置
+    final uri = widget.isGlobalConfig 
+        ? Uri.parse('http://127.0.0.1:5000/config?isGlobalConfig=true')
+        : Uri.parse('http://127.0.0.1:5000/config?configPath=${widget.project!.configPath}');
+    
     print("DEBUG: Sending GET request to $uri");
     try {
       final response = await http.get(uri);
@@ -130,25 +140,29 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
   }
 
   Future<void> _saveConfig() async {
+    // 统一使用config接口，通过参数区分全局配置
     final uri = Uri.parse('http://127.0.0.1:5000/config');
+    
     try {
-      print("DEBUG: Saving config. configPath: ${widget.project.configPath}");
-      // 直接传递 YAML 字符串，不对 _config.toYaml() 进行二次编码
+      final Map<String, dynamic> postData = widget.isGlobalConfig
+          ? {"isGlobalConfig": true, "content": _config.toYaml()}
+          : {"configPath": widget.project!.configPath, "content": _config.toYaml()};
+      
+      print("DEBUG: Saving config. Data: $postData");
+      
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          "configPath": widget.project.configPath,
-          "content": _config.toYaml(),
-        }),
+        body: jsonEncode(postData),
       );
+      
       print("DEBUG: Save response status: ${response.statusCode}");
       setState(() {
         _isDirty = false;
       });
     } catch (e) {
       print("DEBUG: Exception in _saveConfig: $e");
-      // ...错误处理代码...
+      // 错误处理代码
     }
   }
 
@@ -196,7 +210,9 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) return const CircularProgressIndicator();
+    if (_isLoading) return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -215,12 +231,12 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
         ),
         body: Row(
           children: [
-            if (_showSidebar) GlobalSidebar(project: widget.project),
-            if (_showSidebar) const VerticalDivider(width: 1),
+            if (_showSidebar && !widget.isGlobalConfig) GlobalSidebar(project: widget.project),
+            if (_showSidebar && !widget.isGlobalConfig) const VerticalDivider(width: 1),
             Expanded(
               child: Column(
                 children: [
-                  // 自定义顶栏 - 保留顶栏中的保存按钮
+                  // 自定义顶栏 - 显示不同的标题
                   Container(
                     height: kToolbarHeight,
                     color: Theme.of(context).primaryColor,
@@ -234,7 +250,12 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
                           color: Colors.white,
                         ),
                         const SizedBox(width: 8),
-                        Text('编辑配置 - ${widget.project.name}', style: const TextStyle(color: Colors.white, fontSize: 20)),
+                        Text(
+                          widget.isGlobalConfig 
+                              ? '编辑全局配置' 
+                              : '编辑配置 - ${widget.project!.name}', 
+                          style: const TextStyle(color: Colors.white, fontSize: 20)
+                        ),
                         const Spacer(),
                         // 保留顶栏中的保存按钮
                         IconButton(
