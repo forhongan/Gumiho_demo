@@ -147,7 +147,7 @@ class _TranslatingScreenState extends State<TranslatingScreen> with SingleTicker
         // 修改：无论是手动点击还是自动模式，都启动下一次翻译
         if (_autoModeRunning && _currentAutoCount < _autoTranslateCount) {
           // 自动模式处理
-          _currentAutoCount++;
+          _currentAutoCount++; // 在启动下一轮翻译前增加计数
           Future.delayed(const Duration(milliseconds: 500), () {
             startTranslating(); // 开始下一轮
           });
@@ -219,7 +219,7 @@ class _TranslatingScreenState extends State<TranslatingScreen> with SingleTicker
   void _startAutoTranslation() {
     setState(() {
       _autoModeRunning = true;
-      _currentAutoCount = 0;
+      _currentAutoCount = 1;
     });
 
     startTranslating(); // 启动第一轮翻译

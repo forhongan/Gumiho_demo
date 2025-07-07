@@ -58,10 +58,10 @@ class Record:
             re.DOTALL
         )
         if content_block:
+            # 修改正则表达式以匹配id和译文之间可能有换行的情况
             translations = re.findall(
-                r"id[\s\n]*[：:]\s*(\d+)[\s\n]*译文[\s\n]*[：:]\s*(.*?)(?=\s*\nid[\s\n]*[：:]|$)", 
-                content_block.group(1), 
-                re.DOTALL
+                r"id[\s\n]*[：:]\s*(\d+)[\s\n]*译文[\s\n]*[：:][\s\n]*([^\n]*)", 
+                content_block.group(1)
             )
             for tid, text in translations:
                 new_record["translate"][tid] = text.strip()
