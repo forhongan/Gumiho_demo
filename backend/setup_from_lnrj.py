@@ -39,7 +39,7 @@ def setup_project(project_name, translator_name, file_path):  # 初始化项目�
         config_data = yaml_obj.load(file)
     config_data["Translation Project Name"] = project_name
     config_data["book/game/video Name"] = project_name
-    config_data["Translater"] = [translator_name]
+    config_data["Translator"] = [translator_name]
     config_data["file name"] =   os.path.basename(file_path)
     config_data["Original format"] = os.path.splitext(file_path)[1].lower()
     config_data["paragraphed"] = True  # 新增段落设置

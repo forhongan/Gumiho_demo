@@ -210,7 +210,41 @@ class Config:
         default_ai_config['key'] = env_key if env_key else default_ai_config.get('key', '')
         print(f"默认配置最终使用的API密钥: {default_ai_config['key'][:5] if default_ai_config['key'] else '未设置'}...")
         return default_ai_config
+    
+    def make_translation_info_tags(self,status='translating'):
+        """
+        根据配置生成翻译信息标签
+        """
+        config = self.read_config()
+        settings = config.get('first_translation_setting', {})
+        
+        tags = []
+        
+        tags.append("--Translated with Gumiho-v0.9.2--九尾狐本地化Ai辅助翻译系统--\n")
+        tags.append("   With Ai model:{}\n".format(self.get_ai_config(status).get('model_name', 'unknown')))
+        if settings.get('human_involvement', False):
+            tags.append("   Human translator/checker:{}\n".format(config.get('Translator', 'unknown')))
+        
+        return ''.join(tags)
+        
+        # # 专有名词翻译
+        # noun_settings = settings.get('Proper noun translation', {})
+        # if noun_settings.get('enable', False):
+        #     tags.append("专有名词翻译:启用")
+        # else:
+        #     tags.append("专有名词翻译:禁用")
+        
+        # # 自动生成文本总结
+        # summary_settings = settings.get('Automatically generated text summary', {})
+        # if summary_settings.get('enable', False):
+        #     tags.append("文本总结:启用")
+        # else:
+        #     tags.append("文本总结:禁用")
+        
+        # return ', '.join(tags)
             
 if __name__ == '__main__':
-    config_path = '少女所不希望的英雄史诗-副本_project/config.yml'
+    config_path = '少女所不期望的英雄史诗-Gumiho-v0.92-r1_project/config.yml'
     config = Config(config_path)
+    #test
+    print(config.make_translation_info_tags())

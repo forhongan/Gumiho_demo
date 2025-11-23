@@ -38,7 +38,7 @@ def setup_project(project_name, translator_name, file_path):  # 初始化项目�
     with open('default_config.yml', 'r', encoding='utf-8') as file:
         config_data = yaml_obj.load(file)
     config_data["Translation Project Name"] = project_name
-    config_data["Translater"] = [translator_name]
+    config_data["Translator"] = [translator_name]
     config_data["Original format"] = original_format
     with open(os.path.join(project_folder, 'config.yml'), 'w', encoding='utf-8') as file:
         yaml_obj.dump(config_data, file)

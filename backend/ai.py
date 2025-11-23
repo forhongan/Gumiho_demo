@@ -25,6 +25,7 @@ class Call_Ai:
         model_name = config["model_name"]
         temperature = config.get("temperature", 0.7)
         stream = config.get("stream", True)
+        json_or_not = config.get("json_or_not", False)
         max_tokens = config.get("max_tokens", 8152)
         timeout= config.get("timeout", 1800)
         system_str = " ".join(system_prompt) if isinstance(system_prompt, list) else str(system_prompt)
@@ -39,18 +40,31 @@ class Call_Ai:
         if base_url == "test":
             
             test_print(self.messages)
-            return{}
+            # 在测试模式下也返回一致的结构, 确保上层代码可安全访问['content']
+            return {"content": "", "reasoning_content": ""}
         test_print(self.messages)
         # 调用OpenAI API
         client = OpenAI(api_key=api_key, base_url=base_url, max_retries=0, timeout=timeout)
         try:
-            response = client.chat.completions.create(
-                model=model_name,
-                messages=self.messages,
-                temperature=temperature,
-                stream=stream,
-                max_tokens=max_tokens,
-            )
+            if json_or_not:
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=self.messages,
+                    temperature=temperature,
+                    stream=stream,
+                    response_format={
+                        'type': 'json_object'
+                    },
+                    max_tokens=max_tokens,
+                )
+            else:
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=self.messages,
+                    temperature=temperature,
+                    stream=stream,
+                    max_tokens=max_tokens,
+                )
             self.reasoning_content = ""
             self.content = ""
             
@@ -87,7 +101,10 @@ class Call_Ai:
             }
         except Exception as e:
             logger.error(f"API调用失败: {str(e)}")
+            # 返回统一结构，包含content字段，便于上层统一处理并检查error字段
             return {
+                "content": "",
+                "reasoning_content": "",
                 "error": str(e),
                 "success": False
             }
@@ -149,7 +166,8 @@ def call_ai(
     if base_url == "test":
         
         test_print(messages)
-        return{}
+        # 在测试模式下返回与 Call_Ai.call_ai 一致的结构
+        return {"content": "", "reasoning_content": ""}
     test_print(messages)
     # 调用OpenAI API
     client = OpenAI(api_key=api_key, base_url=base_url, max_retries=0, timeout=timeout)
@@ -190,7 +208,10 @@ def call_ai(
         }
     except Exception as e:
         logger.error(f"API调用失败: {str(e)}")
+        # 返回统一结构，包含content字段，便于上层统一处理并检查error字段
         return {
+            "content": "",
+            "reasoning_content": "",
             "error": str(e),
             "success": False
         }

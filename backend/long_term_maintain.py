@@ -1,7 +1,8 @@
 import os
 import yaml
 import json
-from ai import call_ai
+from ai import Call_Ai
+from Config import Config
 from TranslateFile import TranslateFile
 from Project import Project  # 新增导入父类
 from Record import Record
@@ -52,11 +53,11 @@ class LongTermSummary(Project):
     """
     def __init__(self,project_name, title: dict, status):  # 修改：删除 file_path 参数
         super().__init__(project_name)  # 调用父类构造函数，初始化项目相关成员变量
-        self.record_path = self.f_record_path if status == "first_translating" else self.p_record_path
+        self.record_path = self.f_record_path if status == "translating" else self.p_record_path
         self.TranslateFile=TranslateFile(self.translate_file_path)
         self.Record=Record(self.record_path)
         self.status = status
-        self.record_path = self.f_record_path if status == "first_translating" else self.p_record_path
+        self.record_path = self.f_record_path if status == "translating" else self.p_record_path
         self.book_name = self.TranslateFile.get_book_name()
         self.summary = []
         self.higher_summary = ""
@@ -104,7 +105,7 @@ class LongTermSummary(Project):
             f.write(json.dumps(response, ensure_ascii=False, indent=4))
         
     def lts_write_record(self):
-        data= self.load_f_record_data() if self.status == "first_translating" else self.load_p_record_data()
+        data= self.load_f_record_data() if self.status == "translating" else self.load_p_record_data()
         # 如果"Long_term_summary_table"不存在或不是一个列表，则创建该键并初始化为列表
         if "Long_term_summary_table" not in data or not isinstance(data["Long_term_summary_table"], list):
             data["Long_term_summary_table"] = []
@@ -119,7 +120,7 @@ class LongTermSummary(Project):
                 "title": self.title["title"],
                 "type": self.title["level"],
                 "start_id": self.title["id"],
-                "end_id": "",
+                "end_id": self.TranslateFile.get_chapter_end_from_id(self.title["id"]),
                 "summary": self.higher_summary
             })
         with open(self.record_path, "w", encoding="utf-8") as f:
@@ -129,15 +130,29 @@ class LongTermSummary(Project):
         """
         调用AI生成总结
         """
-        with open(self.config_path, "r", encoding="utf-8") as f:
-            config_data = yaml.safe_load(f)
-        ai_config=config_data["default_ai_setting"]
-        ai_config["base_url"]=ai_config["api"]
-        ai_config["api_key"]=ai_config["key"]
-        #test
-        ai_config["base_url"]="test"
+        # with open(self.config_path, "r", encoding="utf-8") as f:
+        #     config_data = yaml.safe_load(f)
+        # ai_config=config_data["default_ai_setting"]
+        # ai_config["base_url"]=ai_config["api"]
+        # ai_config["api_key"]=ai_config["key"]
+        self.Config=Config(self.config_path)
+        # #test
+        # ai_config["base_url"]="test"
         self.lts_test_prompts(sys_prompt,user_prompt)
-        response = call_ai(ai_config,sys_prompt,user_prompt)
+        # response = call_ai(ai_config,sys_prompt,user_prompt)
+        self.Call_Ai = Call_Ai()
+        new_config = self.Config.get_ai_config(status=self.status)
+        
+        # 创建新的AI配置字典
+        ai_config = {}
+        ai_config["api_key"] = new_config.get("key")
+        ai_config["base_url"] = new_config.get("api")
+        ai_config["model_name"] = new_config.get("model_name")
+        ai_config["temperature"] = new_config.get("temperature", 0.6)
+        ai_config["stream"] = new_config.get("stream", False)
+        ai_config["max_tokens"] = new_config.get("max_tokens", 8152)
+        
+        response=self.Call_Ai.call_ai(ai_config,sys_prompt,user_prompt)
         return response
     
     # 新增测试函数，输出系统提示和用户提示
@@ -191,7 +206,7 @@ class LongTermCharacter(Project):
     """
     def __init__(self,project_name, character_name,title: dict, status):
         super().__init__(project_name)
-        self.record_path=self.f_record_path if status == "first_translating" else self.p_record_path
+        self.record_path=self.f_record_path if status == "translating" else self.p_record_path
         self.PNT= PNT(self.PNT_path)
         self.Record=Record(self.record_path)
         self.TranslateFile=TranslateFile(self.translate_file_path)
@@ -266,11 +281,7 @@ class LongTermCharacter(Project):
 #注意!!! 如果选择更新,则返回的新长期描述必须包含对角色完整的描述,绝对不可以只返回新增内容!如果你认为该角色旧的长期描述已经足以概括角色的主要特质,无需更新,则只返回"无需更新"!
 """
         response=self._ltc_call_ai(sys_prompt,user_prompt)
-        #test
-        # response = {
-        #     "content": "\n\n银发紫眸的绝美少女，被猎户收养后通过精湛厨艺赢得村民好评，实则将料理作为合理化暴食欲望的工具。具有将杀戮与烹饪等同视之的异常认知，表面维持着模范养女的伪装，通过利害计算维系人际关系，其温柔举止本质是维持生存环境的策略性行为。展现出通过视觉观察即可完美复现复杂技艺的超常学习能力，潜藏着与优雅外表不符的魔力驱动型暴食体质。在养母格蕾丝面前会显露出丰富的情感波动，但对抽象概念与情感隐喻存在认知障碍，难以理解常人情感本质。名字源自古语中象征残缺之月的\"克莉榭\"，秉持极端功利主义思维模式，以损益平衡作为人际交往准则，能精准模拟正常人的情感反应却缺乏共情基础。将食欲与杀戮本能隐藏在贤淑表象之下，对收养家庭怀有基于生存依赖的类亲情联结，所有行为皆建立在对环境利益最大化的精密计算之上。",
-        #     "reasoning_content": "嗯，我现在需要处理用户关于角色“クリシェ”的长期描述更新请求。首先，我得仔细分析用户提供的所有信息，包括之前的长期描述和最新的各章节段落描述。用户要求我生成新的长期描述，如果更新的话，必须包含完整的角色特征，不能只新增内容。否则，如果旧描述足够，就返回“无需更新”。\n\n首先，查看现有的长期描述。旧描述提到クリシェ是银发紫眸的绝美少女，被猎户收养，通过厨艺获得村民好评，但将料理作为合理化暴食欲望的工具，有杀戮与烹饪等同的异常认知。补充说明她难以理解他人情感，在养母引导下维持表面正常生活，对家庭有类似亲情的依赖，隐藏食欲和杀戮本能。还有她维持模范养女的伪装，通过利害计算维系人际关系，温柔举止是生存策略，具备超常学习能力，魔力驱动的暴食体质，在养母面前展露情感，认知障碍，名字来源，功利主义思维，模拟情感但缺乏共情。\n\n接下来，最新的描述范围是151-189，补充了更多细节：视觉观察即可复现复杂技艺的学习能力，魔力驱动暴食体质，养母面前的情感波动，抽象概念和情感隐喻的认知障碍，名字来源，功利主义思维，损益平衡的人际准则，模拟情感但缺乏共情。\n\n比较新旧描述，最新的描述确实增加了更多细节，比如超常学习能力的具体表现（视觉观察复现技艺）、魔力驱动暴食体质、对抽象概念的认知障碍、名字的由来、更具体的思维模式（极端功利主义，损益平衡），以及情感模拟的机制。旧描述虽然涵盖了许多方面，但新信息进一步丰富了角色的复杂性，特别是她的学习能力、体质、思维模式和情感模拟的细节。\n\n因此，需要将这些新元素整合到长期描述中，确保所有关键点都被包含。要注意不能遗漏任何旧有的重要信息，同时将新内容自然地融入其中，形成全面而连贯的角色描述。必须确保新描述完整，而不仅仅是新增部分，所以需要重新组织语言，合并重复点，并确保所有提到的特质都被涵盖。\n\n现在，我需要将所有这些元素整合成一个流畅、全面的新长期描述，确保没有遗漏任何重要特征，同时保持逻辑连贯。比如，将她的外观、背景、厨艺作为暴食的合理化工具、异常认知、表面伪装、利害计算的人际关系、超常学习能力、魔力暴食体质、养母前的情感波动、认知障碍、名字来源、功利主义思维、情感模拟与缺乏共情等全部包含进去。\n\n检查是否有重复或可以合并的部分。例如，之前提到的“维持模范养女的伪装”和“通过利害计算维系人际关系”可以合并为“表面维持着模范养女的伪装，通过利害计算维系人际关系，其温柔举止本质是维持生存环境的策略性行为”。同时，新增的“视觉观察即可完美复现复杂技艺的超常学习能力”需要明确加入。\n\n最后，确保所有新信息都被包含，并且描述流畅，结构合理。这样生成的新长期描述才能全面反映角色的所有特征，符合用户的要求。\n"
-        # } # 测试用
+
         self.newlongterm_describe = response["content"]
         if self.newlongterm_describe == "无需更新": self.newlongterm_describe = self.longterm_describe
         #test
@@ -358,12 +369,13 @@ class LongTermCharacter(Project):
 
 if __name__ == "__main__":
     #test
-    project_name = "少女所不希望的英雄史诗-副本"
-    book_name = "少女所不希望的英雄史诗"
-    title = {"title": "頭のおかしな少女", "id": 1, "level": "title_lv1"}
-    #LongTermSummary.generate_previous_chapter_summary(project_name, title, "first_translating")
-    character_name = "クリシェ"
-    LongTermCharacter.generate_character(project_name, character_name,title,"first_translating")
+    project_name = "少女所不期望的英雄史诗-Gumiho-v0.92"
+    book_name = "少女所不期望的英雄史诗"
+    title = {"title": "# 少女の日常", "id": 82, "level": "title_lv1"}
+    test1= LongTermSummary(project_name, title,"translating")
+    test1.lts_generate()
+    # character_name = "クリシェ"
+    # LongTermCharacter.generate_character(project_name, character_name,title,"translating")
 
 
 

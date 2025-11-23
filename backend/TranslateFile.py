@@ -72,9 +72,22 @@ class TranslateFile:
                 return chapter.get("type", "").startswith("title")
         return False
     
+    def check_status(self, start, end, status):
+        """
+        检查指定id范围内的章节状态是否为指定状态
+        """
+        start = int(start)  # 转换为整数
+        end = int(end)  # 转换为整数
+        data = self.read_translatefile()
+        for chapter in data["chapters"]:
+            if start <= chapter["id"] <= end:
+                if chapter.get("state", "") != status:
+                    return False
+        return True
+
     def get_chapter_end_from_id(self, id):
         """
-        通过id获取章节范围，返回章节结束位置的id
+        通过起始id(标题句id)获取章节范围，返回章节结束位置的id
         如果id不是标题则报错返回空值
         """
         id = int(id)  # 转换为整数
@@ -155,6 +168,16 @@ class TranslateFile:
         for chapter in chapters:
             if chapter["id"] == id:
                 return chapter["original-text"]
+        return None
+    
+    def get_idx_from_id(self, id):
+        """
+        通过章节id获取章节在列表中的下标
+        """
+        chapters = self.data["chapters"]
+        for i, chapter in enumerate(chapters):
+            if chapter["id"] == id:
+                return i
         return None
     
     def get_book_name(self):
@@ -299,15 +322,28 @@ class TranslateFile:
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text)
         return output_path
+    
+    def change_status_in_range(self, start_id, end_id, new_status):
+        """
+        更改指定id范围内的章节状态为 new_status
+        """
+        start_id = int(start_id)  # 转换为整数
+        end_id = int(end_id)  # 转换为整数
+        data = self.read_translatefile()
+        for chapter in data["chapters"]:
+            if start_id <= chapter["id"] <= end_id:
+                chapter["state"] = new_status
+        self.write_translatefile(data)
         
 if __name__ == "__main__":
     #test
-    translatefile_path = "对反派千金发动百合攻势后，她却当真了，还把我收为宠物_project/TranslateFile.json"
+    translatefile_path = "温暖的异世界转生~等级感和，携带物品!我是最强幼女~_project/TranslateFile.json"
     efo = TranslateFile(translatefile_path)
     
-    # print(efo.get_chapter_end_from_id(1))
+    efo.change_status_in_range(252, 263, "f_trans_unfinished")
+    # # print(efo.get_chapter_end_from_id(1))
     
-    # 调试输出 title_chapters
-    # title_chapters = efo.get_title_chapters_with_status_list("f_trans_finished")
-    # print("调试输出 title_chapters:", title_chapters)
-    efo.export_translatefile(1, 80)
+    # # 调试输出 title_chapters
+    # # title_chapters = efo.get_title_chapters_with_status_list("f_trans_finished")
+    # # print("调试输出 title_chapters:", title_chapters)
+    # efo.export_translatefile(1, 80)

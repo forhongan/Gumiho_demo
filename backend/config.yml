@@ -3,22 +3,23 @@
 # Gumiho System会通过用户设置,自动生成各阶段的ai请求prompt,要求ai进行结构化输出,并将其处理保存,方便下一阶段的翻译工作和后期的人工精修
 
 #----------------------------项目基本设置----------------------------
-Translation Project Name: ''
-Translater:
-- Gumiho
+Translation Project Name: 少女所不期望的英雄史诗-Gumiho-v0.92
+Translator:
+- forhongan
 type: Novel # 项目类型,可选Novel,game,video,默认为novel
-file name:  # 项目文件名
+file name: jp.少女所不期望的英雄史诗.txt # 项目文件名
 original language: Japanese # 原文语言
 target language: Chinese #目标语言
 writing style: | # 书籍风格,可选
 paragraphed: true #存在段落(即存在次级标题)
 #需要翻译的源文件的格式，支持json，sql（默认为来自lunatranslate的结构），excel，docs，txt
 original format: .txt
+paragraph aggregation mode: true #段落聚合模式,将空行而不是换行作为分割，需要以段作为单元，且原文以空行分割段时启用
 
 #默认ai
 default_ai_setting:
   api: https://api.deepseek.com
-  model_name: deepseek-reasoner
+  model_name: deepseek-chat
   stream: true
   json_or_not: false
   max_len: 8192
@@ -31,7 +32,7 @@ Proofreading_needed: true #是否需要校对
 
 #----------------------------书籍基本设置----------------------------
 
-book/game/video Name: '' # 书籍/游戏/视频名称
+book/game/video Name: 少女所不期望的英雄史诗 # 书籍/游戏/视频名称
 book content summary: | # 已知的书籍内容简介,可选
 Writing style: | # 书籍风格,可选
 
@@ -39,7 +40,8 @@ Writing style: | # 书籍风格,可选
 #----------------------------项目初译设置----------------------------
 first_translation_setting:
   sentence-by-sentence_translation: false #启用逐句翻译模式,不启用时默认为整合翻译模式
-  Number of texts per group: 60 #启用整合翻译模式时,每组文本的数量
+  Number of texts per group: 40 #启用整合翻译模式时,每组文本的数量
+  uniform split mode: true #启用后，每组文本会尽量保持长度均匀，且不会超过最大长度
   enable contents: true #存在/启用章节表
 
   human_involvement: true #是否需要人工参与
@@ -51,10 +53,11 @@ first_translation_setting:
     enable: true #设置为true时启用
     create: true #设置为true时,自动生成文本总结
     using: true #设置为true时,自动利用历史文本总结
-    enable previous chapter summary: true
-    enable longterm summary: true
+    enable longterm summary: true #启用长期总结
+    enable previous chapter summary: true #将此前的章节总结加入本章的请求中，仅enable longterm summary: true时有效
+    enable previous chapter summary number: 1 #加入的此前章节总结的最大数量，例如，为1时只加入上一章的总结，为X时加入最多前X章的总结
     Number of history generated records: 5 #自动利用的历史记录数量,不启用时默认为零
-    Number of historical texts used: 60 #加入上文的历史文本原文数量,不启用时默认为零
+    Number of historical texts used: 35 #加入上文的历史文本原文数量,不启用时默认为零
 
   #人名/专有名词翻译设置
   Proper noun translation: true # 设置为true时,翻译,设置为false时,所有人名和专有名词保留原文
@@ -63,14 +66,19 @@ first_translation_setting:
     enable_describe: true  #设置为true时,自动生成人名/专有名词的描述
     enable_describe_using: true #设置为true时,自动利用人名/专有名词的描述
     enable_longterm: true #设置为true时,自动生成长期人名/专有名词对照翻译词典
-    enable_longterm_using: true #设置为true时,自动利用长期人名/专有名词对照翻译词典  
+    enable_longterm_using: true #设置为true时,自动利用长期人名/专有名词对照翻译词典
+    enable_describe_length_limit: true #启用描述长度限制
+    describe_length_limit: 200 #描述长度限制,单位为字符,大于该值时，自动要求ai浓缩描述，大于该值两倍的部分将被截断  
 
   #用于初译的prompt文本
   base_prompt: |
-    你是一个专业的轻小说翻译者,可以根据给出的文本和上下文信息,翻译出优质的译文,符合轻小说的语言风格,并严格按照指定格式输出
+    你是一个专业的轻小说翻译者,可以根据给出的文本和上下文信息,翻译出优质的简体中文译文,符合轻小说的语言风格,不要故意使用造作或晦涩的表达,除非原文风格如此.
+    须严格按照指定格式输出
 
   Output structure: | #非json模式下输出结构
     # 翻译结果
+    id：[ID数字]
+    译文：[翻译内容]
     id：[ID数字]
     译文：[翻译内容]
     ...
@@ -101,11 +109,24 @@ first_translation_setting:
   #用于指定初译时ai结构化输出的样例json格式
   json_structure: |
     {
-      
+      "translations": [
+        {"id": 1, "translation": "这里是 id=1 的译文字符串"},
+        {"id": 2, "translation": "这里是 id=2 的译文字符串"}
+      ],
+      "summary": "用一两句话概括本组内容的核心信息。",
+      "new_characters": [
+        {"name": "原文人物名", "translation": "译名", "describe": "简要描述（性别/特征等）"}
+      ],
+      "character_changes": [
+        {"name": "原有人物名", "describe": "修改或补充后的描述"}
+      ],
+      "new_proper_nouns": [
+        {"name": "原文专有名词", "translation": "译名", "describe": "简要描述/性质"}
+      ]
     }
   Checklist: | #附加检查表
-    ##1.对原有人物的修改 中,填入的是根据 #已确定的人物/专有名词翻译：这项的内容,修改或加入补充之后的完整描述,不要删去原有描述!但可以进行一定程度的总结概括,不得使用"新增","补充描述"类的词汇.
-    尤其对于人物性别,性格特征等信息,除非确认发生了变化,否则不要进行修改
+    ##1.对原有人物的修改 中,填入的是根据 #已确定的人物/专有名词翻译：这项的内容,修改或加入补充之后的完整描述,不要轻易删去原有描述，但可以进行一定程度的总结概括,不得使用"新增","补充描述"类的词汇.
+    尤其对于人物性别,性格特征等信息,除非描述内容已随时间或故事演进发生了变化,否则不要进行修改.注意"character_changes"仅适用对## 已确定的人物/专有名词翻译：中提到的人物进行修改，如果文中出现但不在该列表中，说明仍未记录，须按照"new_characters"或"新增人物"加入。
     ##2.name:后填入的应为原文名称
     ##3.如果给出的文本只有一句,可能是被单独提取的高一级标题,此时仅需输出:
     # 翻译结果
@@ -113,10 +134,16 @@ first_translation_setting:
     译文：[翻译内容]
     # 本次总结
     本次总结：本卷标题为[翻译内容]
+    (如果要求了json输出,则按json格式输出以上内容)
+    ##4.原文使用「 」符号表示引号的, 仍保留使用该引号类型, 不要改为中文引号“ ”
+    ##5.输入的 #已确定的人物/专有名词翻译： 中，如有被<< >>包裹的内容，则该表示被<< >>包裹的内容已被人工审查
+    被<< >>包裹的无法且无需更改,请在更新中原样保留,但如有需要你可以修改未被<< >>包裹的内容,如果你发现描述中出现重复部分,请在更新中删去<< >>外部的重复部分
+    ##6.新增人物有全名的，name:字段填写核心的名字，将全名原名和译名放在describe:字段中说明
+    
 
   ai_config:
     api: https://api.deepseek.com
-    model_name: deepseek-reasoner
+    model_name: deepseek-chat
     stream: true
     json_or_not: false
     max_len: 8192
@@ -191,4 +218,5 @@ proofreading_setting:
     stream: true
     json_or_not: false
     max_len: 8192
+Original format: .txt
 Enable base imformation: false

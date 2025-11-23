@@ -46,7 +46,7 @@ class GumihoConfig {
     print("DEBUG: 从YAML加载配置: ${yaml.keys}");
     return GumihoConfig(
       translationProjectName: yaml['Translation Project Name'] ?? '',
-      translater: List<String>.from(yaml['Translater'] ?? []),
+      translater: List<String>.from(yaml['Translator'] ?? []),
       type: yaml['type'] ?? '',
       originalLanguage: yaml['original language'] ?? '',
       targetLanguage: yaml['target language'] ?? '',
@@ -67,7 +67,7 @@ class GumihoConfig {
   Map<String, dynamic> toYaml() {
     return {
       'Translation Project Name': translationProjectName,
-      'Translater': translater,
+      'Translator': translater,
       'type': type,
       'original language': originalLanguage,
       'target language': targetLanguage,
