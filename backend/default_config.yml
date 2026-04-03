@@ -220,3 +220,151 @@ proofreading_setting:
     max_len: 8192
 Original format: .txt
 Enable base imformation: false
+
+
+#----------------------------人工翻译内容解析部分设置----------------------------
+reading_setting:
+  enable: true
+  mixfile_pattern: originmix_*.txt
+  originfile_pattern: origin_*.txt
+  Translatefile_pattern: translate_*.txt
+  line_pair_mode: true # 逐行成对：一行原文一行译文
+  ori_trans: true # 逐行成对且先原文后译文,为false表示先译文后原文,默认true
+  double_file: false # 双文件模式：原文和译文分别存储在两个文件中
+  generate_TranslateFile: false # 是否生成翻译文件，启用后会根据解析结果生成新的翻译文件
+  #------------用于生成翻译文件的设置------------
+  gTF_setting:
+    strict_alignment: false # 为true时，表示原文文件和译文文件格式相同，处理后且按id严格对齐
+    translation_ratio: 1.2 # 匹配时译文提供比例（相对原文），确保覆盖原文
+    #为false时，调用ai来进行原文译文的配对，要求ai输出严格按照Output structure中指定的格式输出
+    base_prompt: |
+      你是一个专业的文本对齐助手,你将得到两段按id给出的文本,分别是原文和译文,请你根据文本内容进行对齐,输出严格按照指定格式的结果,以便程序解析.
+      当原文和译文在一定范围内一一对应时,比如原文从id=20到id=40的内容,对应译文从id=22到id=42的内容,则在"matching chains"中输出{"origin_start_id":20,"translation_start_id":22,"length":21}这样的匹配链,表示原文从id=20开始的21条内容与译文从id=22开始的21条内容为对应翻译.
+      当且仅当原文与译文关系混乱,例如原文中的一句话被拆成了两句译文,或者原文中的两句话被合成了一句译文,又或者原文与译文的对应关系完全错乱时,才需要你进行逐条配对,在"others"中输出类似{"id": 12, "translation": "这里是 id=12 的原文所对应的译文字符串"},
+      注意,你的进行范围必须覆盖所有原文,但不需要覆盖所有译文,不能留下没有匹配的原文,除非给出的译文没能覆盖所有的原文.
+      不要修改原文和译文,仅忠实的进行匹配.
+    Output structure: | # 输出结构，要求ai严格按照此结构输出以便程序解析
+      {
+        "matching chains":[
+          {"origin_start_id":1,"translation_start_id":1,"length":10},
+          {"origin_start_id":13,"translation_start_id":12,"length":15},
+          ...
+        ],
+        "others": [
+          {"id": 12, "translation": "这里是 id=12 的原文所对应的译文字符串"},
+          {"id": 13, "translation": "这里是 id=13 的原文所对应的译文字符串"}
+        ]
+      }
+    
+
+    
+
+  gTF_done: false # 生成翻译文件完成标志，完成后可设置为 true 或 done
+  
+  skip_empty_lines: true # 若为true，会忽略空行并重新配对
+  max_chars_per_chunk: 12000 # 单次发送给AI的最大字符数（近似控制上下文）
+
+
+  Number of pairs per group: 60 # 每次处理的原文-译文对数
+
+  # 用于 reading 的 prompt 文本
+  base_prompt: |
+    你是一个专业的人工翻译内容解析助手。
+    你将得到原文与译文对照的小说片段，请基于译文确定人物/专有名词的译名，并给出简要描述。
+    只输出结构化结果，不要输出多余说明。
+
+  # 当 generate_TranslateFile: false 且 line_pair_mode: true 时使用
+  pairless_prompt: |
+    你将得到一段人工翻译相关文本（可能包含原文与译文交错）。
+    请只关注已确定的信息，输出新增/修改的人物与专有名词。
+
+  # 当 double_file: true 且 line_pair_mode: false 时，先处理原文
+  origin_prompt: |
+    你将得到小说原文片段，请找出出现的角色和专有名词。
+    此阶段不需要给出译名或描述，请保持空字符串。
+
+  # 当 double_file: true 且 line_pair_mode: false 时，再处理译文
+  translation_prompt: |
+    你将得到译文片段以及待补全的名词表。
+    请根据译文补全译名与描述，不要新增未出现的角色。
+
+  # 输出结构（建议 JSON）
+  Output structure: |
+    {
+      "new_characters": [
+        {"name": "原文人物名", "translation": "译名", "describe": "简要描述（性别/特征等）"}
+      ],
+      "character_changes": [
+        {"name": "原有人物名", "describe": "修改或补充后的描述"}
+      ],
+      "new_proper_nouns": [
+        {"name": "原文专有名词", "translation": "译名", "describe": "简要描述/性质"}
+      ]
+    }
+
+  # pairless 模式输出结构（可与通用结构一致）
+  pairless_output_structure: |
+    {
+      "new_characters": [
+        {"name": "原文人物名", "translation": "译名", "describe": "简要描述（性别/特征等）"}
+      ],
+      "character_changes": [
+        {"name": "原有人物名", "describe": "修改或补充后的描述"}
+      ],
+      "new_proper_nouns": [
+        {"name": "原文专有名词", "translation": "译名", "describe": "简要描述/性质"}
+      ]
+    }
+
+  # 原文阶段输出结构（译名与描述留空）
+  origin_output_structure: |
+    {
+      "new_characters": [
+        {"name": "原文人物名", "translation": "", "describe": ""}
+      ],
+      "character_changes": [],
+      "new_proper_nouns": [
+        {"name": "原文专有名词", "translation": "", "describe": ""}
+      ]
+    }
+
+  # 译文阶段输出结构（补全译名和描述）
+  translation_output_structure: |
+    {
+      "new_characters": [
+        {"name": "原文人物名", "translation": "译名", "describe": "简要描述（性别/特征等）"}
+      ],
+      "character_changes": [],
+      "new_proper_nouns": [
+        {"name": "原文专有名词", "translation": "译名", "describe": "简要描述/性质"}
+      ]
+    }
+
+  Checklist: |
+    ##1.name 必须填写原文名称
+    ##2.describe 只写已确认的信息，不要猜测
+    ##3.已有名词仅在描述有新增信息时写入 character_changes
+    ##4.必须输出 JSON，不要附加 Markdown 或解释
+
+  pairless_checklist: |
+    ##1.name 必须填写原文名称
+    ##2.describe 只写已确认的信息，不要猜测
+    ##3.必须输出 JSON
+
+  origin_checklist: |
+    ##1.此阶段仅列出名称，translation 与 describe 必须为空字符串
+    ##2.必须输出 JSON
+
+  translation_checklist: |
+    ##1.只补全给出的名词条目
+    ##2.必须输出 JSON
+
+  include_existing_terms: true # 将已有名词表加入提示词，避免重复
+
+  ai_config:
+    api: https://api.deepseek.com
+    model_name: deepseek-chat
+    stream: true
+    json_or_not: true
+    max_tokens: 8192
+    key: ${DEFAULT_AI_KEY}

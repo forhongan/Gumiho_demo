@@ -369,15 +369,19 @@ class LongTermCharacter(Project):
 
 if __name__ == "__main__":
     #test
-    project_name = "少女所不期望的英雄史诗-Gumiho-v0.92"
-    book_name = "少女所不期望的英雄史诗"
-    title = {"title": "# 少女の日常", "id": 82, "level": "title_lv1"}
-    test1= LongTermSummary(project_name, title,"translating")
-    test1.lts_generate()
-    # character_name = "クリシェ"
-    # LongTermCharacter.generate_character(project_name, character_name,title,"translating")
+    # project_name = "少女所不期望的英雄史诗-Gumiho-v0.92"
+    # book_name = "少女所不期望的英雄史诗"
+    # title = {"title": "# 少女の日常", "id": 82, "level": "title_lv1"}
+    # test1= LongTermSummary(project_name, title,"translating")
+    # test1.lts_generate()
+    # # character_name = "クリシェ"
+    # # LongTermCharacter.generate_character(project_name, character_name,title,"translating")
 
-
+    project_name = "殺されて当然と少女は言った。"
+    book_name = "殺されて当然と少女は言った。"
+    title = {"title": "『北条リオ』", "id": 548, "level": "title_lv1"}
+    test2= LongTermSummary(project_name, title,"translating")
+    test2.lts_generate()
 
 
 

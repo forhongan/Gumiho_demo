@@ -817,14 +817,16 @@ class Translating(Project):
         #     f.write(json.dumps(self.response, ensure_ascii=False, indent=4))
     
 if __name__ == "__main__":
-    project_name = "少女所不期望的英雄史诗"
-    project_name = "少女所不期望的英雄史诗-Gumiho-v0.92-r1"
-    project_name = "鲜血王女-屠戮殆尽-kiki"
-    # project_name = "温暖的异世界转生~等级感和，携带物品!我是最强幼女~"
+    # project_name = "少女所不期望的英雄史诗"
+    # project_name = "少女所不期望的英雄史诗-Gumiho-v0.92-r1"
+    # project_name = "鲜血王女-屠戮殆尽-kiki"
+    # # project_name = "温暖的异世界转生~等级感和，携带物品!我是最强幼女~"
+    # project_name = "殺されて当然と少女は言った。"
+    project_name = "超时空辉耀姬"
     status = "translating"
     # status = "proofreading"
     
-    for i in range(300):
+    for i in range(120):
         now_translating = Translating(project_name, status)
         # print(now_translating.project_path)
         # print(now_translating.config_path)

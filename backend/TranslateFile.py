@@ -108,7 +108,7 @@ class TranslateFile:
 
     def get_previous_chapter_start_from_id(self, id):
         """
-        通过章节id获取上一章节的起始位置id
+        通过标题id获取上一章的起始位置id(上一章标题的id)
         如果id不是标题则报错返回空值
         """
         id = int(id)  # 转换为整数
@@ -337,10 +337,12 @@ class TranslateFile:
         
 if __name__ == "__main__":
     #test
-    translatefile_path = "温暖的异世界转生~等级感和，携带物品!我是最强幼女~_project/TranslateFile.json"
+    translatefile_path = "殺されて当然と少女は言った。_project/TranslateFile.json"
     efo = TranslateFile(translatefile_path)
     
-    efo.change_status_in_range(252, 263, "f_trans_unfinished")
+    # efo.change_status_in_range(1, 15, "proofreading_finished")
+    efo.change_status_in_range(39, 78, "f_trans_unfinished")
+    
     # # print(efo.get_chapter_end_from_id(1))
     
     # # 调试输出 title_chapters

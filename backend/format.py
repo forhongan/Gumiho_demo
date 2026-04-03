@@ -5,6 +5,7 @@ import os
 import re
 from TranslateFile import TranslateFile
 from Config import Config
+from epub_dispose import EpubDispose
 # #-------------------待完成-------------------------
 #     #设计一些自动检测文章结构的方法,将结构的关键数据写入config传递给主格式化文件
 #     #设计与用户交互的方法经由用户提示确定文件格式
@@ -648,219 +649,14 @@ class LightNovelRobotJpFormat:
 
         return save_path
     
-    def lnrj_normal_epub_rebuild(self, start_idx, end_chapter_idx, translated_file_path=None, novel_status="f_trans_finished", with_original_text_or_not=False):
+    def lnrj_normal_epub_rebuild(self, start_idx, end_chapter_idx, translated_file_path=None, novel_status="f_trans_finished", with_original_text_or_not=False, cover=None):
         """
-        将翻译后的JSON文件重新构建为EPUB格式电子书，包含章节结构和目录。
-        规则：
-        - type为title_lv1的为章节标题
-        - 连续两个title_lv1时，前一个视为更高级标题(卷标题)
-        - 每个标题后到下一个标题前的main_text为该章正文段落
-        
-        参数:
-            start_idx, end_chapter_idx: 以章节 id 为范围（包含端点）
-            translated_file_path: 翻译 JSON 路径，默认为 self.destination_path
-            novel_status: 状态字符串，用于文件名
-            with_original_text_or_not: bool，若 True 则在译文上方保留原文
-        返回：写入的文件路径。
+        原有方法已迁移到 epub_dispose.EpubDispose.normal_epub_rebuild，
+        这里仅作为包装器调用该实现以保持兼容性。
         """
-        try:
-            from ebooklib import epub
-        except ImportError:
-            raise ImportError("请先安装 ebooklib: pip install ebooklib")
-        
         translated_file_path = translated_file_path if translated_file_path else self.destination_path
-
-        # 读取翻译 JSON
-        if not os.path.exists(translated_file_path):
-            raise FileNotFoundError(f"翻译文件未找到: {translated_file_path}")
-        with open(translated_file_path, 'r', encoding='utf-8') as f:
-            translated_data = json.load(f)
-
-        title = translated_data.get("title", "")
-        description = translated_data.get("description", "")
-        chapters = translated_data.get("chapters", [])
-
-        # 验证索引
-        try:
-            s = int(start_idx)
-            e = int(end_chapter_idx)
-        except Exception:
-            raise ValueError("start_idx 和 end_chapter_idx 必须为整数")
-        if s > e:
-            raise ValueError("start_idx 不能大于 end_chapter_idx")
-
-        # 过滤并按 id 排序出指定 id 范围内的章节
-        selected = sorted([c for c in chapters if isinstance(c.get("id"), int) and s <= c.get("id") <= e], key=lambda x: x.get("id"))
-        if not selected:
-            raise ValueError("未找到指定范围的章节")
-
-        # 创建 EPUB 书籍对象
-        book = epub.EpubBook()
-        
-        # 设置元数据
-        book.set_identifier(f'gumiho_{title}_{s}_{e}')
-        book.set_title(title)
-        book.set_language('zh-CN')
-        book.add_author('Gumiho Translation')
-        
-        # Helper: 修复相邻引号的换行问题
-        def _repair_adjacent_quotes(text):
-            if not text:
-                return text
-            s = str(text)
-            s = s.replace('』『', '』\n『')
-            s = s.replace('」『', '」\n『')
-            s = s.replace('』「', '』\n「')
-            return s
-
-        # Helper: 将文本转换为HTML段落
-        def _text_to_html_paragraphs(text):
-            if not text:
-                return ""
-            lines = str(text).splitlines()
-            return ''.join(f'<p>{line}</p>' for line in lines if line.strip())
-
-        # 创建封面页（包含标题和描述）
-        intro_content = f'<h1>{title}</h1>'
-        if description:
-            intro_content += _text_to_html_paragraphs(description)
-        
-        # 获取翻译信息标签
-        get_tag_by_config = Config(config_path=os.path.join(self.project_path, "config.yml"))
-        tag = get_tag_by_config.make_translation_info_tags(status='translating')
-        if tag:
-            intro_content += f'<p style="margin-top: 2em; font-style: italic;">{tag}</p>'
-        
-        intro_chapter = epub.EpubHtml(title='简介', file_name='intro.xhtml', lang='zh-CN')
-        intro_chapter.content = intro_content
-        book.add_item(intro_chapter)
-
-        # 解析章节结构
-        epub_chapters = []
-        toc_entries = []
-        spine_entries = ['nav', intro_chapter]
-        
-        i = 0
-        chapter_counter = 0
-        volume_counter = 0
-        
-        while i < len(selected):
-            item = selected[i]
-            item_type = item.get("type", "")
-            
-            # 如果是标题
-            if isinstance(item_type, str) and item_type.startswith("title"):
-                # 检查下一个元素是否也是标题（判断是否为卷标题）
-                is_volume_title = False
-                if i + 1 < len(selected):
-                    next_item = selected[i + 1]
-                    next_type = next_item.get("type", "")
-                    if isinstance(next_type, str) and next_type.startswith("title"):
-                        is_volume_title = True
-                
-                if is_volume_title:
-                    # 这是卷标题，暂存但不立即创建章节
-                    volume_counter += 1
-                    volume_title = item.get("translation-text") or item.get("original-text", "")
-                    volume_title = _repair_adjacent_quotes(volume_title)
-                    volume_toc_entry = []
-                    i += 1
-                    continue
-                
-                # 这是章节标题
-                chapter_counter += 1
-                chapter_title = item.get("translation-text") or item.get("original-text", "")
-                chapter_title = _repair_adjacent_quotes(chapter_title)
-                
-                # 收集该章节的所有正文段落
-                content_parts = []
-                
-                # 如果需要显示原文标题
-                if with_original_text_or_not:
-                    orig_title = item.get("original-text", "")
-                    if orig_title:
-                        orig_title = _repair_adjacent_quotes(orig_title)
-                        content_parts.append(f'<p style="color: gray;">{orig_title}</p>')
-                
-                i += 1
-                
-                # 收集正文段落
-                while i < len(selected):
-                    para_item = selected[i]
-                    para_type = para_item.get("type", "")
-                    
-                    # 遇到下一个标题则停止
-                    if isinstance(para_type, str) and para_type.startswith("title"):
-                        break
-                    
-                    # 处理正文段落
-                    orig_text = para_item.get("original-text", "")
-                    trans_text = para_item.get("translation-text", "")
-                    
-                    if with_original_text_or_not and orig_text:
-                        orig_text = _repair_adjacent_quotes(orig_text)
-                        content_parts.append(f'<p style="color: gray;">{orig_text}</p>')
-                    
-                    text_to_write = trans_text if trans_text else orig_text
-                    text_to_write = _repair_adjacent_quotes(text_to_write)
-                    if text_to_write:
-                        content_parts.append(f'<p>{text_to_write}</p>')
-                    
-                    i += 1
-                
-                # 创建章节HTML
-                chapter_html = f'<h2>{chapter_title}</h2>' + ''.join(content_parts)
-                chapter_file = epub.EpubHtml(
-                    title=chapter_title,
-                    file_name=f'chapter_{chapter_counter}.xhtml',
-                    lang='zh-CN'
-                )
-                chapter_file.content = chapter_html
-                book.add_item(chapter_file)
-                epub_chapters.append(chapter_file)
-                spine_entries.append(chapter_file)
-                
-                # 添加到目录
-                if volume_counter > 0 and 'volume_toc_entry' in locals():
-                    volume_toc_entry.append(chapter_file)
-                else:
-                    toc_entries.append(chapter_file)
-            else:
-                # 跳过非标题的孤立段落
-                i += 1
-        
-        # 如果有卷结构，需要重新组织目录
-        if volume_counter > 0:
-            # 这里需要更复杂的逻辑来处理卷和章节的层级关系
-            # 简化处理：如果检测到卷结构，将所有章节按顺序添加
-            book.toc = epub_chapters
-        else:
-            book.toc = toc_entries
-
-        # 添加必需的 NCX 和 Nav 文件
-        book.add_item(epub.EpubNcx())
-        book.add_item(epub.EpubNav())
-
-        # 设置书脊（阅读顺序）
-        book.spine = spine_entries
-
-        # 生成文件名
-        base_name = f'Gumiho-{title.strip()} ({s})-({e})-'
-        status = "初译完成" if novel_status == "f_trans_finished" else "校对完成"
-        file_name = base_name + status + '.epub'
-
-        if self.project_path:
-            save_dir = os.path.join(self.project_path, 'result')
-            os.makedirs(save_dir, exist_ok=True)
-        else:
-            save_dir = os.path.dirname(translated_file_path)
-
-        save_path = os.path.join(save_dir, file_name)
-        
-        # 写入 EPUB 文件
-        epub.write_epub(save_path, book, {})
-        
-        return save_path
+        disposer = EpubDispose(self.project_path)
+        return disposer.normal_epub_rebuild(start_idx, end_chapter_idx, translated_file_path=translated_file_path, novel_status=novel_status, with_original_text_or_not=with_original_text_or_not, cover=cover)
 
 
 if __name__ == "__main__":
@@ -884,15 +680,16 @@ if __name__ == "__main__":
     # work2=LightNovelRobotJpFormat("少女所不期望的英雄史诗-Gumiho-v0.92-r1_project")
     # # work2.lurj_project_Initialization()
     # start_idx=1
-    # end_chapter_idx=5574
-    # work2.lnrj_normal_txt_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="f_trans_finished")
+    # end_chapter_idx=35117
+    # work2.lnrj_normal_txt_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished")
+    # work2.lnrj_normal_epub_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished", with_original_text_or_not=False, cover="D:/Gumiho_demo/backend/少女所不期望的英雄史诗-Gumiho-v0.92-r1_project/sourcefile/198097.jpg")
     
-    work3=LightNovelRobotJpFormat("鲜血王女-屠戮殆尽-kiki_project")
-    # work3.lurj_project_Initialization()
-    start_idx=1
-    end_chapter_idx=19491
-    work3.lnrj_normal_txt_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished")
-    work3.lnrj_normal_epub_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished", with_original_text_or_not=False)
+    # work3=LightNovelRobotJpFormat("鲜血王女-屠戮殆尽-kiki_project")
+    # # work3.lurj_project_Initialization()
+    # start_idx=1
+    # end_chapter_idx=19491
+    # work3.lnrj_normal_txt_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished")
+    # work3.lnrj_normal_epub_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished", with_original_text_or_not=False)
     
     
     # work4=LightNovelRobotJpFormat("温暖的异世界转生~等级感和，携带物品!我是最强幼女~_project")
@@ -903,3 +700,10 @@ if __name__ == "__main__":
     # end_chapter_idx=6718
     # work4.lnrj_normal_txt_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished")
     # work4.lnrj_normal_epub_rebuild(start_idx, end_chapter_idx, translated_file_path=None, novel_status="proofreading_finished", with_original_text_or_not=False)
+
+    # work5=LightNovelRobotJpFormat("殺されて当然と少女は言った。_project")
+    # work5.lnrj_file_update_toc(work5.original_toc_path)
+    
+    work6=LightNovelRobotJpFormat("超时空辉耀姬_project")
+    work6.lnrj_file_update_toc(work6.original_toc_path)
+    work6.lnrj_format()
