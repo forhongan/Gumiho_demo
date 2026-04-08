@@ -822,11 +822,11 @@ if __name__ == "__main__":
     # project_name = "鲜血王女-屠戮殆尽-kiki"
     # # project_name = "温暖的异世界转生~等级感和，携带物品!我是最强幼女~"
     # project_name = "殺されて当然と少女は言った。"
-    project_name = "超时空辉耀姬"
+    project_name = "鲜血王女-屠戮殆尽-proo-test-kiki"
     status = "translating"
     # status = "proofreading"
     
-    for i in range(120):
+    for i in range(1):
         now_translating = Translating(project_name, status)
         # print(now_translating.project_path)
         # print(now_translating.config_path)

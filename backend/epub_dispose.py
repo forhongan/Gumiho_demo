@@ -101,9 +101,9 @@ class EpubDispose:
                 rt.decompose()
             for ruby in soup.find_all('ruby'):
                 ruby.unwrap()
-            # 处理 br
-            for br in soup.find_all('br'):
-                br.replace_with('\n')
+            # # 处理 br
+            # for br in soup.find_all('br'):
+            #     br.replace_with('\n')
 
             parts = []
             # 简化：直接搜索整个 soup

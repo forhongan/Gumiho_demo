@@ -221,7 +221,7 @@ class TranslateFile:
 
     def export_translatefile(self, start_id, end_id, orig_txt=True):
         """
-        导出翻译文件为适合用户阅读的文本。
+        导出翻译文件为适合用户阅读的文本(txt格式)。
         接受 start_id 和 end_id（章节的 id，而非列表下标），导出内容包括 title、description，
         以及从 start_id 到 end_id 的 original-text 和 translation-text，
         保留与原文文件相同的空行格式。
@@ -322,6 +322,34 @@ class TranslateFile:
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text)
         return output_path
+
+    def get_texts_in_range(self, start_id, end_id, include_empty=False):
+        """
+        获取指定id范围内的原文/译文列表
+        返回: list[dict] => {"id","original","translation","type","state"}
+        include_empty=False 时会跳过原文和译文都为空的条目
+        """
+        start_id = int(start_id)
+        end_id = int(end_id)
+        if start_id > end_id:
+            start_id, end_id = end_id, start_id
+
+        results = []
+        for chapter in self.data.get("chapters", []):
+            cid = int(chapter.get("id", -1))
+            if start_id <= cid <= end_id:
+                original = chapter.get("original-text", "")
+                translation = chapter.get("translation-text", "")
+                if not include_empty and not (original or translation):
+                    continue
+                results.append({
+                    "id": cid,
+                    "original": original,
+                    "translation": translation,
+                    "type": chapter.get("type", ""),
+                    "state": chapter.get("state", "")
+                })
+        return results
     
     def change_status_in_range(self, start_id, end_id, new_status):
         """

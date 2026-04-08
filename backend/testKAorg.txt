@@ -1,0 +1,64 @@
+Appendix: "Understanding Thinker‐Human Translations"
+[…]
+
+As such, SAH humanization sacrifices a large measure of readability to more accurately convey the parallel, simultaneous nature of Thinker telepathy. Paragraph structures are radically repurposed towards this end: paragraphs are built not from a sequence of complete sentences on a topic, but rather from the set of messages sent concurrently along the threads of a telepathic channel. These messages are separated only by "|" tokens within each paragraph, and only one message per thread is allowed in a single paragraph. Therefore, a paragraph break is made whenever a new message is sent on a previously‐used thread, whether from the original sender or not.
+
+Messages in SAH humanization also differ from sentences in Standard in several respects. Most prominent is the addition of a header, denoted by a trailing "·", which conveys metadata about the information being sent in a given message. Typically, this metadata is represented by a sequence of individual symbols1—for example, lowercase Greek letters are used to identify messages on different threads as pertaining to a particular topic under discussion.2 Less obvious differences include the omission of end punctuation and the tendency toward "run‐on" messages, which reflect the continuous and readily‐interrupted flavor of Thinker telepathy.3 Last is the inclusion of various brachygraphic symbols, which will be discussed in more depth later.
+
+Consider the following text, which is adapted from a Thinker telepathic multithreaded stream using SAH humanization:4
+
+μ·The Thinkers' ancestral phenotype, the Baseline, originally used its wide swathes of chromatophore‐bearing skin for camouflage, but slowly came to repurpose them for communication|ν·The history of Thinker communication is normally divided into five eras: pre‐linguistics, display‐and‐gesture languages, written scripts, electronic transmissions, and telepathic channels
+
+This represents a two‐thread communication along a single telepathic channel, where the first thread's message begins with the header "μ·" and where the second thread's message begins with the header "ν·". These headers indicate that there are two separate topics being discussed simultaneously.
+
+In displayed format, a code‐like typeface (such as Type‐Standard Molluscan) is used to distinguish standard Thinker telepathy, representing the lack of emotional affect. It is natural for Human readers to interpret emotional undertones into any written text, even those from Thinkers. It is hoped that an alternate typeface emphasizes what any Human receiving Thinker telepathy feels instinctively: that such undertones are not at all present.
+
+The italic styling is merely standard for representing any type of telepathic communication.
+
+Now, consider this expanded snippet of the same material, again adapted via SAH humanization:
+
+μ·The Thinkers' ancestral phenotype, the Baseline, originally used its wide swathes of chromatophore‐bearing skin for camouflage, but slowly came to repurpose them for communication|ν·The history of Thinker communication is traditionally divided into five eras: pre‐linguistics, display‐and‐touch languages, written scripts, electronic transmissions, and telepathic channels
+
+μ·However, the bandwidth of body display signaling was limited by the Baseline's binocular vision, which could only fully focus on one area of the body at a time—parallelization was usually achieved via a combination of chromatophore display and tentacle gesture|ν·Recently, several prominent study‐of‐Baseline‐experts have argued that the display‐and‐touch era should be further divided, but this is still debated, with one faction arguing for a pure display languages era followed by a display‐and‐touch languages era, on the basis of historical‐preference‐specification‐reconstruction, and with another arguing for the reverse ordering, based on evolutionary considerations|μ+·It is hypothesized that the white sclera of the Baseline's eyes evolved in order to better convey what visual display was being received, among other information
+
+In this second paragraph, the multithreaded telepathy switches from using two threads to three. The first two threads in this example continue on their original "μ" and "ν" topics, but this is not a certainty—sometimes topics will shift threads. The third thread's message begins with the header "μ+·". The first symbol in the header establishes the topic, and the second symbol means that, for full understanding, a message on another thread with the same topic must also be understood—in this case, the "μ·" message on the first thread, though a "+" symbol can be used without a topic symbol like "μ" if there is only a single topic under discussion.
+
+It is important to understand here that paragraph groupings do not indicate exact simultaneity of messages. Typically, messages with a "+" symbol in their header begin sending somewhat later than others, though much of their transmission duration will still be in parallel with the message or messages on which they depend.
+
+For this next snippet, in which we have skipped ahead a bit in the source material, watch for a new symbol in the headers:
+
+·The development of written scripts, necessary for primitive information transmission and storage, required compromises on parallelization similar to those involved in pure display communication|+∈·Early scripts often simply adapted local ideographic displays, but by the age of machines, most proto‐Tentacles had standardized to logographic scripts, some descendants of which are still in use today|+∈·One common script, used where parallelization was strongly preferred, involved a linear sequence of four‐part circular glyphs, each quarter of the circle containing logograms which continued from the same quarter of the previous glyph, rather than from the rest of the current glyph
+
+Here, the header symbol "∈" indicates messages on different threads that provide parallel, but different information about the same subject.5 Greek letters are not used in the headers, meaning there is only one topic under discussion.6 However, this does not mean the messages are sequential.
+
+Continuing:
+
+·The dawn of electronic communication prompted heavy experimentation with metadata, multithreading, and script‐interpretation‐tools in a bid to increase parallelization||+·Elaborate electronic communication schemes proliferated ≈ villosin spawning 7
+
+·While scripts remained in use throughout the electronic transmissions era, haptic script‐interpretation‐tools which derived from non‐parallel scripts eventually became dominant, as the physical feedback to tendrils allowed for practical parallelization, especially when combined with visual displays|·Display‐and‐touch gradually fell out of use, as it required physical proximity, and in time was used only with juveniles who had not yet mastered electronic systems|
+
+In the source stream for the first paragraph above, no message was sent on the channel's second thread, but the thread was kept active. To represent this, the "|" thread divider token is used with a null message, resulting in two "|" tokens in a row. In the source for the second paragraph, no message was sent on the third thread, as indicated by the trailing "|".
+
+The first paragraph also demonstrates a distinctive feature of SAH humanization: the use of brachygraphic, or shorthand, symbols. "≈" is shorthand for "is comparable to" and indicates a simile—commonly used in Thinker communication—while conveying the efficient and distinctive essence of the original telepathic content.
+
+Now, try reviewing the previous three paragraphs of source material, following each of the three active threads one at a time.
+
+Consider that the second messages sent on the second and third threads did not follow from the first messages on each thread. This is not uncommon, as topics shift, especially outside of back‐and‐forth conversation. It is important to remember that while Thinker telepathy is much more parallel than standard Human modes of communication, it is not fully parallel, and neither are the Thinkers themselves. Each thread is not meant to be consumed in complete isolation from the others, but in gestalt.
+
+Before moving on from the current source and delving into more brachygraphy, we will present one of its last passages, without further comment, except to note the interesting assumptions of Thinker culture.
+
+μ·The development of neural implants and, in time, neural telepathy allowed for the final, perfected form of Thinker communication, tailored directly to cognition|μ+·Free from the limitations of electromagnetic transmissions like no previous mode of communication was, and completely natural to use, the telepathic channel rapidly displaced its predecessors across the entire population|ν·The currents Thinkers rode through communications development are idiosyncratic, the byproducts of evolution both biological and cultural, but the destination arrived at is one that all sapient species are likely to eventually choose
+
+1 Metadata not pertaining to the meaning of the message body, such as user signatures and initial cryptographic handshakes, are usually omitted for compactness. When included, they are of course longer than a single symbol.
+
+2 SAH humanization pointedly avoids using numbers or the beginning of an alphabetic sequence to label topics, to avoid giving the mistaken impression that these headers indicate priority or any sequential ordering. However, by convention and for clarity, the first topic header in a translated paragraph will always use "μ", and the second "ν", and the third "ξ", and so forth.
+
+3 Human messages translated in Thinker format are conventionally labeled with end punctuation, reflecting the comparatively halting and turn‐taking nature of Human thoughts.
+
+4 This source was chosen for its unusual similarity to Infopedia's style, with an eye toward reader comprehension.
+
+5 A related symbol, "∪", indicates when multiple messages are attempting to convey the same information, in order to increase the likelihood that the information is fully understood.
+
+6 Of course, what defines a "topic" is decided by whoever creates the message. In other words, the header symbols themselves are how a Thinker expresses what is or isn't a separate topic, or what is or isn't closely related information, etc.
+
+7 Villosin (Sapidum pisk, tasty‐spawning‐garnet‐bellied‐picotee‐finned‐rough‐fish) are an aquatic species from the Thinker homeworld which reproduce similarly to capelin on Earth. The Standard name is arbitrary; because the Baseline lacked vocal organs, the Thinkers have no spoken languages, so concepts without pre‐existing Human equivalents cannot be translated phonetically. Instead, they are given new, pronounceable labels, or explained via component concepts.

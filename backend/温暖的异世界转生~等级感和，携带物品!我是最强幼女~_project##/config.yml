@@ -3,11 +3,11 @@
 # Gumiho System会通过用户设置,自动生成各阶段的ai请求prompt,要求ai进行结构化输出,并将其处理保存,方便下一阶段的翻译工作和后期的人工精修
 
 #----------------------------项目基本设置----------------------------
-Translation Project Name: 少女所不期望的英雄史诗-Gumiho-v0.92
+Translation Project Name: 温暖的异世界转生~等级感和，携带物品!我是最强幼女~
 Translator:
 - forhongan
 type: Novel # 项目类型,可选Novel,game,video,默认为novel
-file name: jp.少女所不期望的英雄史诗.txt # 项目文件名
+file name: (NEW)jp.温暖的异世界转生~等级感和，携带物品!我是最强幼女~.txt    # 项目文件名
 original language: Japanese # 原文语言
 target language: Chinese #目标语言
 writing style: | # 书籍风格,可选
@@ -15,7 +15,7 @@ paragraphed: true #存在段落(即存在次级标题)
 #需要翻译的源文件的格式，支持json，sql（默认为来自lunatranslate的结构），excel，docs，txt
 original format: .txt
 paragraph aggregation mode: true #段落聚合模式,将空行而不是换行作为分割，需要以段作为单元，且原文以空行分割段时启用
-
+double blank line: true #双空行分割模式,当启用段落聚合模式，且将连续两个空行作为段落分割，需要以段作为单元，且原文以双空行分割段时启用
 #默认ai
 default_ai_setting:
   api: https://api.deepseek.com
@@ -32,17 +32,20 @@ Proofreading_needed: true #是否需要校对
 
 #----------------------------书籍基本设置----------------------------
 
-book/game/video Name: 少女所不期望的英雄史诗 # 书籍/游戏/视频名称
+book/game/video Name: 温暖的异世界转生~等级感和，携带物品!我是最强幼女~ # 书籍/游戏/视频名称
 book content summary: | # 已知的书籍内容简介,可选
+  本书为异世界百合向轻小说
 Writing style: | # 书籍风格,可选
 
 
 #----------------------------项目初译设置----------------------------
 first_translation_setting:
   sentence-by-sentence_translation: false #启用逐句翻译模式,不启用时默认为整合翻译模式
-  Number of texts per group: 5S0 #启用整合翻译模式时,每组文本的数量
+  Number of texts per group: 40 #启用整合翻译模式时,每组文本的数量
   uniform split mode: true #启用后，每组文本会尽量保持长度均匀，且不会超过最大长度
   enable contents: true #存在/启用章节表
+
+  Proofread now: true #在初译完成后立即将本段提交至校对阶段
 
   human_involvement: true #是否需要人工参与
   human_check_setting: #人工参与设置,设定人工参与的部分,human_involvement: true时生效
@@ -70,10 +73,6 @@ first_translation_setting:
     enable_describe_length_limit: true #启用描述长度限制
     describe_length_limit: 200 #描述长度限制,单位为字符,大于该值时，自动要求ai浓缩描述，大于该值两倍的部分将被截断  
 
-  #知识唤醒模块设置
-  knowledge_awakening_enabled: true #是否启用知识唤醒模块
-  Enable generating suggestions: false #在翻译完成后提出可用的知识唤醒生成建议（实验性功能），仅在human_involvement: true 时生效
-  
   #用于初译的prompt文本
   base_prompt: |
     你是一个专业的轻小说翻译者,可以根据给出的文本和上下文信息,翻译出优质的简体中文译文,符合轻小说的语言风格,不要故意使用造作或晦涩的表达,除非原文风格如此.
@@ -143,7 +142,7 @@ first_translation_setting:
     ##5.输入的 #已确定的人物/专有名词翻译： 中，如有被<< >>包裹的内容，则该表示被<< >>包裹的内容已被人工审查
     被<< >>包裹的无法且无需更改,请在更新中原样保留,但如有需要你可以修改未被<< >>包裹的内容,如果你发现描述中出现重复部分,请在更新中删去<< >>外部的重复部分
     ##6.新增人物有全名的，name:字段填写核心的名字，将全名原名和译名放在describe:字段中说明
-    
+
 
   ai_config:
     api: https://api.deepseek.com
@@ -154,73 +153,53 @@ first_translation_setting:
 
 
 #----------------------------项目校对设置----------------------------
-    key: ${FIRST_TRANS_AI_KEY}
-  enable_uniform_length: false
-  enable_maximum_length: false
-  enable_independence_ai_config: false
 proofreading_setting:
+  #轻量化校对模式，不提供原文和其他信息，仅主要对译文通顺性进行修正，目前此项默认开启
+  lightweight_proofreading_mode: true
+
+  same_as_first_translation_text: true #使用初译阶段的文本处理设置，为true时，与first_translation_setting中的文本处理设置相同，目前此项默认开启
+
   #用于指定校对的prompt文本
   proofreading_prompt: |
     你需要执行一个轻小说的校对任务
-    根据给出的日中对照的译文文本,上下文,和给出的与小说有关的其他信息,对照检查表,一句句检查原翻译是否存在错误是否存在更合适的翻译,并按格式要求输出.
+    主要检查译文文本中是否存在明显的不通顺表达,如果存在,在不改变原义的情况下允许适当调整语序和用辞,使其语序自然,符合中国人的阅读习惯.
+    须严格按照指定格式输出
 
-  Enable Contents: false #存在/启用章节表
+  json_structure: | #json模式下输出结构
+    "translations": [
+      {"id": x, "translation": "这里是 id=x 的修改后的译文字符串"},
+      {"id": y, "translation": "这里是 id=y 的修改后的译文字符串"},
+      ...
+    ]
+    or (无修正)
 
-  #用于指定ai结构化输出的样例json格式
-  novel_Proofreading_json: |
-
-  #人名/专有名词翻译设置
-  Proper noun translation: true # 设置为true时,翻译,设置为false时,所有人名和专有名词保留原文
-  Automatic Translation Dictionary: true #设置为true时,自动生成对照翻译词典  
-
-  #历史文本利用与总结优化
-  Automatically generated text summary:
-    enable: true #设置为true时,自动生成文本总结
-    create: true #设置为true时,自动生成文本总结
-    using: true #设置为true时,自动利用历史文本总结
-    Number of history generated records: 5 #自动利用的历史记录组数,不启用时默认为零
-    Number of historical texts used: 0 #加入上文的历史文本原文组数,不启用时默认为零
-  Number of texts per group: 60 #每组文本的数量
-  Output structure: | #输出结构
-    ## 请严格按以下结构输出：
-    # 翻译结果
-    id：[ID数字]
-    译文：[翻译内容]
+  Output structure: | #非json模式下输出结构
+    # 原文的问题点
+    [在此处用自然语言简要描述原文不通顺的地方,和你想要进行的修改,如果没有问题则写"(无问题)"]
+    # 校对结果
+    id：[需修改的句子的ID数字]
+    译文：[修改后的更佳的翻译内容]
+    id：[需修改的句子的ID数字]
+    译文：[修改后的更佳的翻译内容]
     ...
-    （按顺序处理每个ID对应的内容）
-
-    # 本次总结
-    本次总结：[用1-2句话概括本组内容的核心信息]
-
-    # 新增人物（可选）
-    1.
-    name:[原文名称]
-    translation:[确定的译名]
-    describe:[根据文中简要描述该人物,可以包含性别,特征等,不需要包含不确定的信息]
-    2.
-    ...
-    # 对原有人物的修改（可选）
-    1.
-    name:[原文名称]
-    describe:[修改后的描述,当本次内容中出现了对该人物补充的描述和特点,在此进行修改]
-    2.
-    ...
-    # 其他认为有必要添加的专有名词（例如某个技能,某个城市的名字等,可选）
-    1.
-    name:[原文名称]
-    translation:[确定的译名]
-    describe:[根据文中简要描述该名词,可以包含性质,特征等,不需要包含不确定的信息]
+    （仅需提供修改的部分）
 
   Checklist: | #附加检查表
-    #其他注意点:
-    ##1.对原有人物的修改 中,填入的是修改后的完整描述,不要删去原有描述,除非你认为原有描述有误,但可以进行一定程度的总结概括
-    ##2.name:后填入的应为原文名称
+    ## 1.你需要检查给出的中文译文是否通顺或是否有明显错误，对于有问题的句子，在不改变原义的情况下适当调整语序和用辞使其译文更佳，不得更改原文中专有名词，人名等的译法
+    注意,如果你修改了某个句子,在更新的"translation"/"译文"字段中,请输出该句修改后的完整内容,而不是仅输出修改的部分.
+    若给出的所有原文中均不存在上述问题，输出（无修正）,非（无修正）情况下,输出必须以 # 校对结果 开头
+    ## 2.如果只给出了一个句子，可能是被单独提取的高一级标题，此时仅需输出:（无修正）
+    ## 3.无需修改原译文使用的「 」符号和引号字符, 不要修改或删除原译文中的「 」符号和引号；符号问题除非很明显，否则不是你需要修改的对象。
+    ## 4.未更改的句子，绝对不可以输出，即" # 校对结果 " 或 "translations" 中出现，只需要给出需修改的句子的id和对应的修改后的译文，注意给出的文本需要是修改后的
 
+  with_same_setting_as_first_translation: true #使用初译阶段的ai设置，为true时，与first_translation_setting中的ai_config设置相同
   ai_config:
     api: https://api.deepseek.com
-    model_name: deepseek-reasoner
+    model_name: deepseek-chat
     stream: true
     json_or_not: false
     max_len: 8192
+
+#----------------------------其他设置----------------------------
+Enable base imformation: true #译文自动生成标签，目前默认开启
 Original format: .txt
-Enable base imformation: false
