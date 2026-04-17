@@ -138,22 +138,8 @@ class KnowledgeAwakener:
 		return call_cfg
 
 	def _ensure_table(self, data):
-		if not isinstance(data, dict):
-			data = {}
-		table = data.get("knowledge_awaken_table")
-		if not isinstance(table, list):
-			table = []
-			data["knowledge_awaken_table"] = table
-		return data, table
-
-	def _next_id(self, table):
-		max_num = 0
-		for item in table:
-			raw = str(item.get("id", ""))
-			m = re.match(r"ka_(\d+)", raw)
-			if m:
-				max_num = max(max_num, int(m.group(1)))
-		return f"ka_{max_num + 1:04d}"
+		"""兼容旧实现：table 的维护下沉到 PNT。"""
+		return self.PNT._ensure_knowledge_awaken_table(data)
 
 	def add_knowledge_awaken_rule(self, keyword_expr, knowledge_content, meta=None, enabled=True):
 		"""
@@ -161,35 +147,23 @@ class KnowledgeAwakener:
 		keyword_expr: logic string
 		knowledge_content: string
 		"""
-		data = self.PNT.read_pnt()
-		data, table = self._ensure_table(data)
-		entry = {
-			"id": self._next_id(table),
-			"keyword_expr": keyword_expr or "",
-			"knowledge_content": knowledge_content or "",
-			"enabled": bool(enabled),
-			"created_at": datetime.utcnow().isoformat(timespec="seconds") + "Z"
-		}
-		if meta:
-			entry["meta"] = meta
-		table.append(entry)
-		data["knowledge_awaken_table"] = table
-		self.PNT.write_pnt(data)
-		return entry
+		return self.PNT.upsert_knowledge_awaken_card(
+			keyword_expr=keyword_expr or "",
+			knowledge_content=knowledge_content or "",
+			enabled=enabled,
+			meta=meta,
+		)
 
 	def list_knowledge_cards(self):
-		data = self.PNT.read_pnt()
-		_, table = self._ensure_table(data)
-		return table
+		return self.PNT.list_knowledge_awaken_cards()
 
 	def get_applicable_knowledge(self, text, case_sensitive=False, limit=None):
 		"""
 		Evaluate all cards against given text and return matching cards.
 		"""
-		data = self.PNT.read_pnt()
-		_, table = self._ensure_table(data)
+		table = self.PNT.list_knowledge_awaken_cards()
 		results = []
-		for item in table:
+		for item in table or []:
 			if not item.get("enabled", True):
 				continue
 			expr = item.get("keyword_expr", "")
@@ -198,6 +172,40 @@ class KnowledgeAwakener:
 				if limit and len(results) >= limit:
 					break
 		return results
+
+
+def match_knowledge_cards_for_text(project_name, text_or_list, *, case_sensitive=False, limit=5, sse_callback=None):
+	"""给 translate 等调用方使用的轻量封装：输入文本，输出触发的卡片列表。"""
+	awakener = KnowledgeAwakener(project_name=project_name, sse_callback=sse_callback)
+	if text_or_list is None:
+		text = ""
+	elif isinstance(text_or_list, list):
+		text = "\n".join([str(x) for x in text_or_list if x is not None])
+	else:
+		text = str(text_or_list)
+	return awakener.get_applicable_knowledge(text, case_sensitive=case_sensitive, limit=limit)
+
+
+def format_triggered_knowledge_for_prompt(cards, *, per_card_char_limit=800):
+	"""将触发的知识卡片格式化为 prompt 可直接拼接的多行文本。"""
+	if not cards:
+		return []
+	lines = ["\n## 本次触发了知识："]
+	for item in cards:
+		kid = str(item.get("id", ""))
+		expr = str(item.get("keyword_expr", ""))
+		content = str(item.get("knowledge_content", ""))
+		content = content.strip()
+		if per_card_char_limit and len(content) > per_card_char_limit:
+			content = content[:per_card_char_limit].rstrip() + "…"
+		# 保持与 PNT 列表类似的 bullet 风格
+		header = f"- [{kid}]"
+		if expr:
+			header += f" 触发表达式：{expr}"
+		lines.append(header)
+		if content:
+			lines.append(f"  知识内容：{content}")
+	return lines
 
 	def build_material_from_range(self, start_id, end_id, include_translation=True):
 		"""从 TranslateFile 的 id 范围构建 AI 可读的材料字符串。"""

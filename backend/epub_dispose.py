@@ -915,14 +915,14 @@ class EpubDispose:
     
 if __name__ == "__main__":
     # 简单测试
-    project_path = "D:\\Gumiho_demo\\backend\\超时空辉耀姬_project"
+    project_path = "D:\\Gumiho_demo\\backend\\殺されて当然と少女は言った。_project"
     disposer = EpubDispose(project_path)
-    epub_path = "D:\\Gumiho_demo\\backend\\超时空辉耀姬_project\\sourcefile\\超かぐや姫！.epub"
+    epub_path = "D:\\Gumiho_demo\\backend\\殺されて当然と少女は言った。_project\\sourcefile\\殺されて当然と少女は言った。【電子特典付き】.epub"
     # disposer.epub_format(epub_path, make_txt=True)
     # output_json = disposer.epub_format(epub_path)
     # print(f"Generated JSON: {output_json}")
 
-    json_path = "D:\\Gumiho_demo\\backend\\超时空辉耀姬_project\\TranslateFile.json"
+    json_path = "D:\\Gumiho_demo\\backend\\殺されて当然と少女は言った。_project\\TranslateFile.json"
     # output_epub = disposer.normal_epub_rebuild(1, 10, translated_file_path=json_path)
     # print(f"Generated EPUB: {output_epub}")
     disposer.epub_refilled(epub_path, translated_file_path=json_path, novel_status="proofreading_finished", with_original_text_or_not=False)

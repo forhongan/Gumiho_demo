@@ -1,5 +1,6 @@
 import json
 import re
+from datetime import datetime
 
 class PNT:
     """
@@ -36,6 +37,94 @@ class PNT:
         """
         with open(self.PNT_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # -------------------- Knowledge awaken cards (experimental) --------------------
+    def _ensure_knowledge_awaken_table(self, data: dict):
+        if not isinstance(data, dict):
+            data = {}
+        table = data.get("knowledge_awaken_table")
+        if not isinstance(table, list):
+            table = []
+            data["knowledge_awaken_table"] = table
+        return data, table
+
+    def _next_knowledge_awaken_id(self, table):
+        max_num = 0
+        for item in table or []:
+            raw = str((item or {}).get("id", ""))
+            m = re.match(r"ka_(\d+)", raw)
+            if m:
+                try:
+                    max_num = max(max_num, int(m.group(1)))
+                except Exception:
+                    pass
+        return f"ka_{max_num + 1:04d}"
+
+    def list_knowledge_awaken_cards(self):
+        data = self.read_pnt()
+        _, table = self._ensure_knowledge_awaken_table(data)
+        return table
+
+    def search_knowledge_awaken_cards(self, query: str):
+        query = (query or "").strip()
+        cards = self.list_knowledge_awaken_cards()
+        if not query:
+            return cards
+        q = query.lower()
+        results = []
+        for c in cards:
+            try:
+                if q in str(c.get("id", "")).lower() or q in str(c.get("keyword_expr", "")).lower() or q in str(c.get("knowledge_content", "")).lower():
+                    results.append(c)
+            except Exception:
+                continue
+        return results
+
+    def upsert_knowledge_awaken_card(self, *, card_id=None, keyword_expr="", knowledge_content="", enabled=True, meta=None):
+        """新增或更新一张知识唤醒卡片。
+
+        - card_id=None 时创建新卡片并自动分配 id
+        - card_id!=None 时按 id 更新；找不到则创建一张并使用该 id
+        """
+        data = self.read_pnt()
+        data, table = self._ensure_knowledge_awaken_table(data)
+
+        entry = None
+        if card_id:
+            for item in table:
+                if str(item.get("id")) == str(card_id):
+                    entry = item
+                    break
+
+        creating = entry is None
+        if creating:
+            entry = {
+                "id": str(card_id) if card_id else self._next_knowledge_awaken_id(table),
+                "created_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            }
+            table.append(entry)
+
+        entry["keyword_expr"] = keyword_expr or ""
+        entry["knowledge_content"] = knowledge_content or ""
+        entry["enabled"] = bool(enabled)
+        entry["updated_at"] = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+        if meta is not None:
+            entry["meta"] = meta
+
+        data["knowledge_awaken_table"] = table
+        self.write_pnt(data)
+        return entry
+
+    def delete_knowledge_awaken_card(self, card_id):
+        data = self.read_pnt()
+        data, table = self._ensure_knowledge_awaken_table(data)
+        before = len(table)
+        table = [c for c in table if str((c or {}).get("id")) != str(card_id)]
+        data["knowledge_awaken_table"] = table
+        if len(table) != before:
+            self.write_pnt(data)
+            return True
+        return False
     
     def get_character_translate(self,original_name):
         """

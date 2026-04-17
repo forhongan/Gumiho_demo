@@ -11,6 +11,7 @@ from PNT import PNT
 from ai import Call_Ai
 import math
 import re
+from knowledge_awak import match_knowledge_cards_for_text, format_triggered_knowledge_for_prompt
 
 class Translating(Project):
     """
@@ -124,6 +125,28 @@ class Translating(Project):
         self.summary_list=[]
         if(self.Config.data[self.now_setting]["Automatically generated text summary"]["using"]): 
             self.summary_get()
+
+        # 知识唤醒：匹配并缓存本次触发的知识卡片（实验性）
+        self.triggered_knowledge_cards = []
+        try:
+            ka_enabled = bool(self.Config.data.get(self.now_setting, {}).get("knowledge_awakening_enabled", False))
+        except Exception:
+            ka_enabled = False
+        if ka_enabled:
+            try:
+                # 触发文本：以本次原文 + 上下文总结为主，避免引入过多噪声
+                trigger_texts = []
+                trigger_texts.extend(self.original_text or [])
+                trigger_texts.extend(self.summary_list or [])
+                self.triggered_knowledge_cards = match_knowledge_cards_for_text(
+                    project_name=self.project_name,
+                    text_or_list=trigger_texts,
+                    case_sensitive=False,
+                    limit=8,
+                    sse_callback=self.sse_callback,
+                )
+            except Exception:
+                self.triggered_knowledge_cards = []
         
         #构建系统提示
         self.sys_prompt_make()
@@ -529,6 +552,15 @@ class Translating(Project):
             prompt_lines.append("\n## 已确定的人物/专有名词翻译：\n")#注:无论有没有表中有没有内容,均有必要添加该行,否则容易引起ai误解
             if len(self.name_list) > 0:
                 prompt_lines.extend([f"- {name}" for name in self.name_list])
+
+        # 添加知识唤醒（实验性）：仅当启用且确实匹配到知识卡片时写入
+        try:
+            ka_enabled = bool(self.Config.data.get(self.now_setting, {}).get("knowledge_awakening_enabled", False))
+        except Exception:
+            ka_enabled = False
+        if ka_enabled:
+            cards = getattr(self, "triggered_knowledge_cards", []) or []
+            prompt_lines.extend(format_triggered_knowledge_for_prompt(cards))
         
         # =============== 输出格式要求 ===============
         prompt_lines.append(f"\n#请严格按照以下格式输出:\n{self.output_structure}")

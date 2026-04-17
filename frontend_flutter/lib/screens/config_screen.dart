@@ -65,11 +65,14 @@ final GumihoConfig defaultConfig = GumihoConfig(
 class ConfigScreen extends StatefulWidget {
   final Project? project; // 修改为可空类型
   final bool isGlobalConfig; // 新增全局配置标志
+  // 新增：草稿模式（用于创建项目前预编辑，不直接保存到后端文件）
+  final String? initialYamlContent;
   
   const ConfigScreen({
     Key? key, 
     this.project, // 修改为可选参数
     this.isGlobalConfig = false, // 添加默认值为false
+    this.initialYamlContent,
   }) : super(key: key);
 
   @override
@@ -83,10 +86,16 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
   bool _showSidebar = true;
   late TabController _tabController; // 新增：Tab控制器
 
+  bool get _isDraftMode => widget.initialYamlContent != null;
+
   @override
   void initState() {
     super.initState();
-    _loadConfig();
+    if (_isDraftMode) {
+      _loadConfigFromYamlString(widget.initialYamlContent!);
+    } else {
+      _loadConfig();
+    }
     _tabController = TabController(length: 3, vsync: this); // 初始化Tab控制器
   }
 
@@ -139,7 +148,33 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
     }
   }
 
+  Future<void> _loadConfigFromYamlString(String yamlContent) async {
+    try {
+      final rawYaml = loadYaml(yamlContent);
+      final Map<String, dynamic> yamlMap = jsonDecode(jsonEncode(rawYaml));
+      setState(() {
+        _config = GumihoConfig.fromYaml(yamlMap);
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("DEBUG: Error parsing initial YAML: $e");
+      setState(() {
+        _config = defaultConfig;
+        _isLoading = false;
+      });
+    }
+  }
+
   Future<void> _saveConfig() async {
+    // 草稿模式：直接返回配置给上一个页面
+    if (_isDraftMode) {
+      setState(() {
+        _isDirty = false;
+      });
+      Navigator.pop(context, _config.toYaml());
+      return;
+    }
+
     // 统一使用config接口，通过参数区分全局配置
     final uri = Uri.parse('http://127.0.0.1:5000/config');
     
@@ -191,7 +226,6 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
           ),
           TextButton(
             onPressed: () {
-              _saveConfig();
               Navigator.of(context).pop(true); // 保存后返回
             },
             child: const Text('是'),
@@ -205,7 +239,17 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
         ],
       ),
     );
-    return result ?? false;
+
+    if (result == true) {
+      if (_isDraftMode) {
+        Navigator.pop(this.context, _config.toYaml());
+        return false;
+      }
+      await _saveConfig();
+      return true;
+    }
+    if (result == false) return true;
+    return false;
   }
 
   @override
@@ -221,18 +265,22 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             _saveConfig();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('配置已保存')),
-            );
+            if (!_isDraftMode) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('配置已保存')),
+              );
+            }
           },
           icon: const Icon(Icons.save),
-          label: const Text('保存'),
+          label: Text(_isDraftMode ? '应用' : '保存'),
           backgroundColor: Colors.green,
         ),
         body: Row(
           children: [
-            if (_showSidebar && !widget.isGlobalConfig) GlobalSidebar(project: widget.project),
-            if (_showSidebar && !widget.isGlobalConfig) const VerticalDivider(width: 1),
+            if (_showSidebar && !widget.isGlobalConfig && widget.project != null && !_isDraftMode)
+              GlobalSidebar(project: widget.project),
+            if (_showSidebar && !widget.isGlobalConfig && widget.project != null && !_isDraftMode)
+              const VerticalDivider(width: 1),
             Expanded(
               child: Column(
                 children: [
@@ -251,9 +299,11 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          widget.isGlobalConfig 
-                              ? '编辑全局配置' 
-                              : '编辑配置 - ${widget.project!.name}', 
+                          _isDraftMode
+                              ? '预编辑项目配置'
+                              : (widget.isGlobalConfig 
+                                  ? '编辑全局配置' 
+                                  : '编辑配置 - ${widget.project!.name}'), 
                           style: const TextStyle(color: Colors.white, fontSize: 20)
                         ),
                         const Spacer(),
@@ -262,9 +312,11 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
                           icon: const Icon(Icons.save),
                           onPressed: () {
                             _saveConfig();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('配置已保存')),
-                            );
+                            if (!_isDraftMode) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('配置已保存')),
+                              );
+                            }
                           },
                           color: Colors.white,
                         ),

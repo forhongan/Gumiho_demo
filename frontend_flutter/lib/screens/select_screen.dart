@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 import 'config_screen.dart';
-import 'frecord_screen.dart';
 import 'PNT_screen.dart';
 import 'translatefile_screen.dart';
+import 'knowledge_awak_screen.dart';
 import '../widgets/global_sidebar.dart';
 import 'file_export_screen.dart';  // 新增导入
 import 'translating_screen.dart';
@@ -62,16 +62,17 @@ class _SelectScreenState extends State<SelectScreen> {
             ),
             _buildMenuButton(
               context,
-              icon: Icons.history,
-              label: '初译记录文件',
-              onPressed: () => _navigateTo(FRecordScreen(project: widget.project)),
+              icon: Icons.list_alt,
+              label: '专有名词列表',
+              onPressed: () => _navigateTo(PNTScreen(project: widget.project)),
               style: buttonStyle,
             ),
             _buildMenuButton(
               context,
-              icon: Icons.list_alt,
-              label: '专有名词列表',
-              onPressed: () => _navigateTo(PNTScreen(project: widget.project)),
+              icon: Icons.auto_awesome,
+              label: '知识卡片库（实验性）',
+              onPressed: () =>
+                  _navigateTo(KnowledgeAwakScreen(project: widget.project)),
               style: buttonStyle,
             ),
             _buildMenuButton(

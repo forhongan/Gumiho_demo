@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 class TranslateFile:
     """
@@ -199,24 +200,55 @@ class TranslateFile:
 
     def get_title_chapters_with_status_list(self,target_state="f_trans_finished"):
         """
-        获取所有标题章节的列表和状态
+        获取所有标题章节的列表和状态。
+
+        兼容两类入参：
+        - 旧版：传入具体 state（如 f_trans_finished），用于“仅导出已翻译”的语义。
+        - 新版：传入 scope：
+            - all：返回全部章节，并为每章计算 status（translated/unfinished）
+            - translated_only：仅返回已翻译章节
+
+        “已翻译”判定：章节范围内的所有条目 state 均属于已翻译集合。
         """
-        chapters = self.data["chapters"]
+        chapters = self.data.get("chapters", [])
+
+        translated_states = {
+            "f_trans_finished",
+            "proofreading_finished",
+            "HT_PNTing",
+            "HT_PNTed",
+        }
+
+        scope = (target_state or "").strip()
+        # 兼容旧行为：当传入的是具体 state（例如 f_trans_finished），按“仅已翻译”处理
+        if scope not in {"all", "translated_only"}:
+            scope = "translated_only"
+
+        # 找到所有标题索引
+        title_indices = [
+            i for i, ch in enumerate(chapters)
+            if isinstance(ch.get("type"), str) and ch.get("type", "").startswith("title")
+        ]
+
         title_chapters = []
-        now_chapter = None
-        status= target_state
-        for chapter in chapters:
-            if chapter["state"] != target_state:
-                status = "unfinished"
-            if chapter["type"].startswith("title"):
-                if now_chapter is not None:
-                    title_chapters.append({"title":now_chapter,"status":status})
-                
-                now_chapter = chapter["original-text"]
-                status= target_state
-        if now_chapter is not None:
-            title_chapters.append({"title": now_chapter, "status": status})
-        
+        for idx_pos, title_idx in enumerate(title_indices):
+            next_title_idx = title_indices[idx_pos + 1] if idx_pos + 1 < len(title_indices) else len(chapters)
+            segment = chapters[title_idx:next_title_idx]
+
+            is_translated = True
+            for seg_item in segment:
+                state = seg_item.get("state")
+                if state not in translated_states:
+                    is_translated = False
+                    break
+
+            status = "translated" if is_translated else "unfinished"
+            title_text = chapters[title_idx].get("original-text", "")
+            title_id = chapters[title_idx].get("id")
+            title_chapters.append({"id": title_id, "title": title_text, "status": status})
+
+        if scope == "translated_only":
+            return [c for c in title_chapters if c.get("status") == "translated"]
         return title_chapters
 
     def export_translatefile(self, start_id, end_id, orig_txt=True):
@@ -226,12 +258,19 @@ class TranslateFile:
         以及从 start_id 到 end_id 的 original-text 和 translation-text，
         保留与原文文件相同的空行格式。
         """
-        import os
         import glob
         
         novel_title = self.data.get("title", "ExportedNovel")
         description = self.data.get("description", "")
         chapters = self.data.get("chapters", [])
+
+        def _safe_filename(name: str) -> str:
+            name = (name or "").strip()
+            # Windows 文件名非法字符: <>:"/\\|?*
+            name = re.sub(r'[<>:"/\\|?*]+', '_', name)
+            # 末尾不能是空格或点
+            name = name.rstrip(" .")
+            return name or "ExportedNovel"
         
         # 根据章节 id 找到在列表中的索引
         start_index = next((i for i, chapter in enumerate(chapters) if chapter["id"] == int(start_id)), None)
@@ -318,7 +357,9 @@ class TranslateFile:
         
         # 写入文件
         text = "\n".join(output_lines)
-        output_path = os.path.join(folder, f"{novel_title}.txt")
+        result_dir = os.path.join(folder, "result")
+        os.makedirs(result_dir, exist_ok=True)
+        output_path = os.path.join(result_dir, f"{_safe_filename(novel_title)}.txt")
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text)
         return output_path

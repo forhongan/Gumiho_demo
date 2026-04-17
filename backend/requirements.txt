@@ -5,3 +5,4 @@ PyYAML==6.0.2
 ruamel.yaml==0.18.5
 python-dotenv
 ebooklib==0.18
+beautifulsoup4==4.12.3
